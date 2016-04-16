@@ -85,6 +85,8 @@ public class EventHandler implements ActionListener
 		
 		// add actionListners to settingsPanel objects
 		settingsPanel.settingsSaveButton.addActionListener(this);
+		settingsPanel.chooseDatabaseFile.addActionListener(this);
+		settingsPanel.chooseXmlFile.addActionListener(this);
 		
 		// userListPanel
 		userListPanel.addButton.addActionListener(this);
@@ -201,10 +203,6 @@ public class EventHandler implements ActionListener
 			
 			createEditErrorForm(JOptionPane.showInputDialog("Enter ENF ID Number to edit:"));
 
-			 JOptionPane.showMessageDialog(null,
-					 "Functionality Disabled.",
-					 "Functionality Currently Disabled.",
-					 JOptionPane.ERROR_MESSAGE);
 			
 			
 		}// end frame.adminEditItem || frame.devEditItem
@@ -349,22 +347,32 @@ public class EventHandler implements ActionListener
 			
 			if(e.getSource() == frame.logoutItem)
 			 {
-				 
-				 JOptionPane.showMessageDialog(null,
-						 "Logged Out!",
-						 "Logged Out!",
-						 JOptionPane.INFORMATION_MESSAGE);
-				 
-				 frame.menuBar.remove(frame.adminMenu);
-				 frame.menuBar.remove(frame.developerMenu);
-				 frame.accountMenu.remove(frame.changePwItem);
-				 frame.accountMenu.remove(frame.logoutItem);				 
-				 errorPanel.editButton.setEnabled(false);
-				 frame.loginItem.setEnabled(true);
-				 
-				 frame.validate();
-				 frame.repaint();
-				 login.dispose();
+				// confirm logout
+				int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+				
+				// if yes
+				if (confirm == JOptionPane.YES_OPTION)
+				{
+				
+					 JOptionPane.showMessageDialog(null,
+							 "Logged Out!",
+							 "Logged Out!",
+							 JOptionPane.INFORMATION_MESSAGE);
+					 
+					 frame.menuBar.remove(frame.adminMenu);
+					 frame.menuBar.remove(frame.developerMenu);
+					 frame.accountMenu.remove(frame.changePwItem);
+					 frame.accountMenu.remove(frame.logoutItem);				 
+					 errorPanel.editButton.setEnabled(false);
+					 frame.loginItem.setEnabled(true);
+					 
+					 frame.validate();
+					 frame.repaint();
+					 login.dispose();
+				}
+				else {
+					// stay logged in
+				}
 				 
 			 }// end login.loginButton
 		
@@ -467,6 +475,30 @@ public class EventHandler implements ActionListener
 			settings.savePaths(settingsPanel.txtDatabasePath.getText(), settingsPanel.txtXmlPath.getText());
 			settingsPanel.txtDatabasePath.setText(settings.getDatabasePath());
 			settingsPanel.txtXmlPath.setText(settings.getXmlPath());
+		}
+		
+		if(e.getSource() == settingsPanel.chooseDatabaseFile)
+		{
+	        JFileChooser databaseFileChooser = new JFileChooser();
+	        int returnValue = databaseFileChooser.showOpenDialog(null);
+	        
+	        if (returnValue == JFileChooser.APPROVE_OPTION) 
+	        {
+	          File selectedFile = databaseFileChooser.getSelectedFile();
+	          settingsPanel.txtDatabasePath.setText(selectedFile.getAbsolutePath());
+	        }
+		}
+		
+		if(e.getSource() == settingsPanel.chooseXmlFile)
+		{
+	        JFileChooser databaseFileChooser = new JFileChooser();
+	        int returnValue = databaseFileChooser.showOpenDialog(null);
+	        
+	        if (returnValue == JFileChooser.APPROVE_OPTION) 
+	        {
+	          File selectedFile = databaseFileChooser.getSelectedFile();
+	          settingsPanel.txtXmlPath.setText(selectedFile.getAbsolutePath());
+	        }
 		}
 		
 	}// end ActionPerformed

@@ -10,7 +10,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class settingsJPanel extends JPanel
 {
-	JButton settingsSaveButton;
+	JButton settingsSaveButton, chooseDatabaseFile, chooseXmlFile;
 	JTextField txtDatabasePath, txtXmlPath;
 	settingsHandler settings;
 
@@ -76,13 +76,20 @@ public class settingsJPanel extends JPanel
     	centerPanel.add(new JLabel("Database Path"));
     	txtDatabasePath = new JTextField(30);
     	txtDatabasePath.setText(settings.getDatabasePath());
-    	centerPanel.add(txtDatabasePath, "wrap, pushx, growx");
+    	centerPanel.add(txtDatabasePath, "pushx, growx");
+    	
+    	chooseDatabaseFile = new JButton("Choose");
+    	centerPanel.add(chooseDatabaseFile, "wrap");
+    	
     	
     	// XML Path
     	centerPanel.add(new JLabel("XML Path"));
     	txtXmlPath = new JTextField(10);
     	txtXmlPath.setText(settings.getXmlPath());
-    	centerPanel.add(txtXmlPath, "wrap, pushx, growx");
+    	centerPanel.add(txtXmlPath, "pushx, growx");
+    	
+    	chooseXmlFile = new JButton("Choose");
+    	centerPanel.add(chooseXmlFile, "wrap");
     	
     	// add centerPanel to the contentPane
     	add(centerScroll, BorderLayout.CENTER);

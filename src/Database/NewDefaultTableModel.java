@@ -6,6 +6,8 @@ import java.util.Properties;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import GUI.settingsJPanel;
+
 public class NewDefaultTableModel extends DefaultTableModel
 {
 	private String enf_ID, opened_Date, opened_by, date_of_error, status, due_date, url, username, password, tableName;
@@ -189,7 +191,6 @@ public class NewDefaultTableModel extends DefaultTableModel
 		if (confirm == JOptionPane.YES_OPTION)
 		{
 				
-		
 			//open the database connection
 			openConnection();
 			
@@ -245,7 +246,49 @@ public class NewDefaultTableModel extends DefaultTableModel
 				
 	}// end updateDatabase
 	
-	
+	/**
+	 * 
+	 * @param enf
+	 */
+	public void editRecord(String enf, settingsJPanel settingsPanel)
+	{
+		//open the database connection
+		openConnection();
+		
+		try {
+			
+			String query = "SELECT ENF_ID,Opened_Date,Opened_By,Date_of_Error,Status,Due_Date FROM Errors where ENF_ID=?";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(0, enf);
+			rs = pst.executeQuery();
+			
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null,
+					"Error connecting to errorData, check path settings.",
+					"Error Connection to database.",
+					JOptionPane.ERROR_MESSAGE);
+		}
+
+		// Iterate through the result and print the student names
+		while (rs.next())
+		{
+			//get all record information
+			enf_ID = rs.getString("ENF_ID");
+			opened_Date = rs.getString("Opened_Date");
+			opened_by = rs.getString("Opened_By");
+			date_of_error = rs.getString("Date_of_Error");
+			status = rs.getString("Status");
+			due_date = rs.getString("Due_Date");
+		   
+			//out put it to the table
+			//output = (DefaultTableModel) outputTable.getModel();
+			output.addRow(new Object[]{enf_ID, opened_Date, opened_by, date_of_error, status, due_date});
+		   
+		}// end while
+			
+		// Close the connection
+		closeConnection();
+	}
 	
 	
 	/**

@@ -81,7 +81,7 @@ public class settingsHandler
 		JOptionPane.showMessageDialog(null,
 				"Settings Saved.\n\nPlease restart application for changes to take affect.",
 				"Saved Successfully",
-				JOptionPane.OK_OPTION);
+				JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	
