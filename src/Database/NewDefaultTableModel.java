@@ -270,20 +270,25 @@ public class NewDefaultTableModel extends DefaultTableModel
 		}
 
 		// Iterate through the result and print the student names
-		while (rs.next())
-		{
-			//get all record information
-			enf_ID = rs.getString("ENF_ID");
-			opened_Date = rs.getString("Opened_Date");
-			opened_by = rs.getString("Opened_By");
-			date_of_error = rs.getString("Date_of_Error");
-			status = rs.getString("Status");
-			due_date = rs.getString("Due_Date");
-		   
-			//out put it to the table
-			//output = (DefaultTableModel) outputTable.getModel();
-			output.addRow(new Object[]{enf_ID, opened_Date, opened_by, date_of_error, status, due_date});
-		   
+		try {
+			while (rs.next())
+			{
+				//get all record information
+				enf_ID = rs.getString("ENF_ID");
+				opened_Date = rs.getString("Opened_Date");
+				opened_by = rs.getString("Opened_By");
+				date_of_error = rs.getString("Date_of_Error");
+				status = rs.getString("Status");
+				due_date = rs.getString("Due_Date");
+			   
+				//out put it to the table
+				//output = (DefaultTableModel) outputTable.getModel();
+				//.addRow(new Object[]{enf_ID, opened_Date, opened_by, date_of_error, status, due_date});
+			   
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}// end while
 			
 		// Close the connection
