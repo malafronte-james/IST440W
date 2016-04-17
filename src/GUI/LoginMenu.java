@@ -13,7 +13,7 @@ public class LoginMenu extends smallJFrame
 	
 	LoginMenu()
 	{
-		super("Admin Login", 400, 140);
+		super("Login", 400, 140);
 		
 		// set contentPane to BorderLayout
 		setLayout(new BorderLayout());

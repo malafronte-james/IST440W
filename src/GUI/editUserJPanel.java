@@ -8,13 +8,13 @@ import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
 
-public class addUserJPanel extends JPanel
+public class editUserJPanel extends JPanel
 {
 	JButton addUserSaveButton;
 	JTextField txtFirstName, txtAdminID, txtLastName, txtJobTitle, txtEmail;
 	JComboBox cmbDepartment;
 	
-	addUserJPanel()
+	editUserJPanel()
 	{
 		super();
 		this.setLayout(new BorderLayout());
@@ -33,7 +33,7 @@ public class addUserJPanel extends JPanel
 		JPanel northPanel = new JPanel();
 		
 		//instantiate the title label
-	    ImageIcon titleImage = new ImageIcon(this.getClass().getResource("Images/addUser.jpg"));
+	    ImageIcon titleImage = new ImageIcon(this.getClass().getResource("Images/editUser.jpg"));
 	    
 		//instantiate the title label
 		JLabel titleLabel = new JLabel(titleImage);

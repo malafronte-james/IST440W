@@ -106,7 +106,7 @@ public class mainJFrame extends JFrame {
 		
 	
 		//home menu **shortcut to bring up the error list
-		homeItem = new JMenuItem("Home");
+		homeItem = new JMenuItem("Error List");
 		settingsItem = new JMenuItem("Settings");
 		exitItem = new JMenuItem("Exit");
 		homeMenu.add(homeItem);

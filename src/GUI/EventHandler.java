@@ -23,6 +23,8 @@ public class EventHandler implements ActionListener
 	errorJPanel errorPanel = new errorJPanel(settings.getDatabasePath());
 	addUserJPanel addUserPanel = new addUserJPanel();
 	userListJPanel userListPanel = new userListJPanel(settings.getDatabasePath());
+	editUserJPanel editUserPanel = new editUserJPanel();
+	editErrorJPanel editErrorPanel = new editErrorJPanel();
 	mainJFrame frame = new mainJFrame();
 	String username;
 	
@@ -45,6 +47,8 @@ public class EventHandler implements ActionListener
 		cards.add(addUserPanel, "addUserPanel");
 		cards.add(userListPanel, "userListPanel");
 		cards.add(settingsPanel, "settingsPanel");
+		cards.add(editErrorPanel, "editErrorPanel");
+		cards.add(editUserPanel, "editUserPanel");
 		
 		
 		
@@ -203,7 +207,7 @@ public class EventHandler implements ActionListener
 			
 			createEditErrorForm(JOptionPane.showInputDialog("Enter ENF ID Number to edit:"));
 
-			
+			cd.show(cards, "editErrorPanel");
 			
 		}// end frame.adminEditItem || frame.devEditItem
 		
@@ -219,6 +223,7 @@ public class EventHandler implements ActionListener
 			
 		}// end errorPanel.printButton
 		
+		
 		/*
 		 * 
 		 * Developer & Admin Menu
@@ -232,6 +237,35 @@ public class EventHandler implements ActionListener
 			cd.show(cards, "addUserPanel");
 			
 		}// end frame.addUserItem
+		
+		if (e.getSource() == frame.adminEditUserItem || e.getSource() == frame.devEditUserItem)
+		{
+			JOptionPane.showInputDialog("Enter User ID Number to edit:");
+			cd.show(cards, "editUserPanel");
+		}
+		
+		if (e.getSource() == frame.adminDeleteErrorItem || e.getSource() == frame.devDeleteErrorItem)
+		{
+			JOptionPane.showInputDialog("Enter ENF ID Number to delete:");
+
+			// confirm delete
+			int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this error?", "Delete Error", JOptionPane.YES_NO_OPTION);
+			
+			// if yes
+			if (confirm == JOptionPane.YES_OPTION)
+			{
+			
+				 JOptionPane.showMessageDialog(null,
+						 "Error Deleted!",
+						 "Deleted!",
+						 JOptionPane.INFORMATION_MESSAGE);
+				 
+				 //delete
+			}
+			else {
+				// cancel
+			}
+		}
 		
 		if(e.getSource() == frame.adminUserListItem || e.getSource() == frame.devUserListItem)
 		{
