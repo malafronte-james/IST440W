@@ -10,8 +10,9 @@ import net.miginfocom.swing.*;
 public class addErrorJPanel extends JPanel
 {
 	JButton saveButton, backButton;
-	JTextField txtSapUserName, txtEnfID, txtOpenedDate, txtLocationAffected, txtDateOfError, txtSkuNumber, txtQty;
-	JComboBox cmbDepartment, cmbShift, cmbStatus;
+	public JTextField txtSapUserName, txtEnfID, txtOpenedDate, txtProcess, txtLocationAffected, txtDateOfError, txtSkuNumber, txtQty, txtOpenedBy;
+	public JComboBox cmbDepartment, cmbShift, cmbStatus;
+	public JTextArea txtNotes;
 	
 	addErrorJPanel()
 	{
@@ -105,11 +106,11 @@ public class addErrorJPanel extends JPanel
     	
     	// opened by
     	centerPanel.add(new JLabel("Opened By"));
-    	centerPanel.add(new JTextField(5), "wrap, pushx, growx");
+    	centerPanel.add(txtOpenedBy = new JTextField(5), "wrap, pushx, growx");
     	
     	// location affected
     	centerPanel.add(new JLabel("Location Affected"));
-    	centerPanel.add(new JTextField(5), "wrap, pushx, growx");
+    	centerPanel.add(txtLocationAffected = new JTextField(5), "wrap, pushx, growx");
     	
     	// date of error
     	centerPanel.add(new JLabel("Date of Error"));
@@ -139,11 +140,11 @@ public class addErrorJPanel extends JPanel
     	
     	// Process or Location
     	centerPanel.add(new JLabel("Process or Location"));
-    	centerPanel.add(new JTextField(5), "wrap, pushx, growx");
+    	centerPanel.add(txtProcess = new JTextField(5), "wrap, pushx, growx");
     	
     	// Notes
     	centerPanel.add(new JLabel("Notes"));
-    	centerPanel.add(new JTextArea(5,5), "wrap, pushx, growx");
+    	centerPanel.add(txtNotes = new JTextArea(5,5), "wrap, pushx, growx");
     	
     	// Attachments
     	centerPanel.add(new JLabel("Attachments"), "wrap");

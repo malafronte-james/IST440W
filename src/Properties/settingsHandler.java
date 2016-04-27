@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 public class settingsHandler 
 {
 	String databasePath = null;
-	String xmlPath = "";
+	String pdfPath = "";
 	Properties settings;
 	FileInputStream in;
 	FileOutputStream out;
@@ -37,9 +37,9 @@ public class settingsHandler
 	/**
 	 * 
 	 * @param sDbPath
-	 * @param sXmlPath
+	 * @param sPdfPath
 	 */
-	public void savePaths(String sDbPath, String sXmlPath)
+	public void savePaths(String sDbPath, String sPdfPath)
 	{
 		try
 		{
@@ -60,12 +60,12 @@ public class settingsHandler
 				
 			// set properties
 			settings.setProperty("databasePath", sDbPath);
-			settings.setProperty("xmlPath", sXmlPath);
+			settings.setProperty("pdfPath", sPdfPath);
 			settings.store(out, "Properties");
 								
 			// save properties to variables
 			databasePath = sDbPath;
-			xmlPath = sXmlPath;
+			pdfPath = sPdfPath;
 				
 			out.close();
 				
@@ -89,9 +89,9 @@ public class settingsHandler
 	 * 
 	 * @return
 	 */
-	public String getXmlPath()
+	public String getPdfPath()
 	{
-		return xmlPath;
+		return pdfPath;
 	}
 	
 	
@@ -116,7 +116,7 @@ public class settingsHandler
 			
 			//assign all the properties to variables
 			databasePath = settings.getProperty("databasePath");
-			xmlPath = settings.getProperty("xmlPath");
+			pdfPath = settings.getProperty("pdfPath");
 			
 			//close the FileInputStream
 			in.close();

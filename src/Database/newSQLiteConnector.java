@@ -3,6 +3,8 @@ package Database;
 import java.sql.*;
 import javax.swing.JOptionPane;
 
+import GUI.*;
+
 public class newSQLiteConnector {
 
 	private Connection connection = null;
@@ -346,8 +348,8 @@ public class newSQLiteConnector {
 	 * Update an Error
 	 */
 	public void updateError(String ENF_ID,
-			String Associate_First_Name,
-			String Associate_Last_Name,
+			//String Associate_First_Name,
+			//String Associate_Last_Name,
 			String SAP_Username,
 			String department,
 			String shift,
@@ -358,9 +360,9 @@ public class newSQLiteConnector {
 			String quantity,
 			String date_Of_Error,
 			String status,
-			String due_date,
+			//String due_date,
 			String notes,
-			String attachment,
+			//String attachment,
 			String openedBy)
 	{
 		
@@ -369,8 +371,8 @@ public class newSQLiteConnector {
 			connect();
 			
 			String query = "UPDATE Errors SET "
-					+ "Associate_First_Name = '?'," //Associate_First_Name
-					+ "Associate_Last_Name = '?'," // Associate_Last_Name
+					//+ "Associate_First_Name = '?'," //Associate_First_Name
+					//+ "Associate_Last_Name = '?'," // Associate_Last_Name
 					+ "SAP_Username = '?'," // SAP_Username
 					+ "Department = '?'," // department
 					+ "Shift = '?'," // shift
@@ -381,29 +383,29 @@ public class newSQLiteConnector {
 					+ "Quantity = '?'," // quantity
 					+ "Date_of_Error = '?'," // date_Of_Error
 					+ "Status = '?'," // status
-					+ "Due_Date = '?'," // due_date
+					//+ "Due_Date = '?'," // due_date
 					+ "Notes = '?'," // notes
-					+ "Attachment = '?'," // attachment
+					//+ "Attachment = '?'," // attachment
 					+ "Opened_By) = '?'," // openedBy
 				    + "WHERE ENF_ID = '?';"; // ENF_ID
 			PreparedStatement pst = connection.prepareStatement(query);
-			pst.setString(1, Associate_First_Name);
-			pst.setString(2, Associate_Last_Name);
-			pst.setString(3, SAP_Username);
-			pst.setString(4, department);
-			pst.setString(5, shift);
-			pst.setString(6, opened_date);
-			pst.setString(7, location_Being_Audited);
-			pst.setString(8, article_Number);
-			pst.setString(9, location_Affected);
-			pst.setString(10, quantity);
-			pst.setString(11, date_Of_Error);
-			pst.setString(12, status);
-			pst.setString(13, due_date);
-			pst.setString(14, notes);
-			pst.setString(15, attachment);
-			pst.setString(16, openedBy);
-			pst.setString(17, ENF_ID);
+			//pst.setString(1, Associate_First_Name);
+			//pst.setString(2, Associate_Last_Name);
+			pst.setString(1, SAP_Username);
+			pst.setString(2, department);
+			pst.setString(3, shift);
+			pst.setString(4, opened_date);
+			pst.setString(5, location_Being_Audited);
+			pst.setString(6, article_Number);
+			pst.setString(7, location_Affected);
+			pst.setString(8, quantity);
+			pst.setString(9, date_Of_Error);
+			pst.setString(10, status);
+			//pst.setString(11, due_date);
+			pst.setString(11, notes);
+			//pst.setString(13, attachment);
+			pst.setString(12, openedBy);
+			pst.setString(13, ENF_ID);
 			
 			
 			ResultSet rs = pst.executeQuery();
@@ -548,9 +550,142 @@ public class newSQLiteConnector {
 		}
 	}
 
+	/**
+	 * 
+	 * @param databasePath
+	 */
 	public void setDBPath(String databasePath) {
 		
 		sDbLocation = databasePath;
 		
+	}
+	
+	public int getNumberOfErrors()
+	{
+		int count = 0;
+		try 
+		{
+			
+			connect();
+			
+			String query = "SELECT * FROM Errors";
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			
+			// cycle through results
+			while(rs.next())
+			{
+				count = count + 1;
+				
+			}
+			
+		      
+		} catch (Exception changePW) {
+			 JOptionPane.showMessageDialog(null,
+					 "Currently Unavailable",
+					 "Connection Error",
+					 JOptionPane.ERROR_MESSAGE);
+			 
+			 changePW.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+			
+		return count;
+	}
+	
+	public int getNumberOfUsers()
+	{
+		int count = 0;
+		try 
+		{
+			
+			connect();
+			
+			String query = "SELECT * FROM User";
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			
+			// cycle through results
+			while(rs.next())
+			{
+				count = count + 1;
+				
+			}
+			
+		      
+		} catch (Exception changePW) {
+			 JOptionPane.showMessageDialog(null,
+					 "Currently Unavailable",
+					 "Connection Error",
+					 JOptionPane.ERROR_MESSAGE);
+			 
+			 changePW.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+			
+		return count;
+	}
+	
+	/**
+	 * 
+	 * @param enfID
+	 * @param panel
+	 */
+	public void getErrorData(String enfID, editErrorJPanel panel)
+	{
+		editErrorJPanel p = panel;
+		try {
+			
+			connect();
+			
+			String query = "select * from Errors where ENF_ID=?";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, enfID);
+			ResultSet rs = pst.executeQuery();
+			
+			// cycle through results
+			while(rs.next())
+			{
+				 p.setTxtEnfID(rs.getString("ENF_ID"));
+				 //p.settxrs.getString("Associate_First_Name");
+				 //last_Name = rs.getString("Associate_Last_Name");
+				 p.setTxtSapUserName(rs.getString("SAP_Username"));
+				 //rs.getString("Department");
+				 //shift = rs.getString("Shift");
+				 //openedDate = rs.getString("Opened_Date");
+				 //Location_Being_Audited = rs.getString("Location_Being_Audited");
+				 p.setTxtSkuNumber(rs.getString("Article_Number"));
+				 p.setTxtLocationAffected(rs.getString("Location_Affected"));
+				 p.setTxtQty(rs.getString("Quantity"));
+				 p.setTxtDateOfError(rs.getString("Date_of_Error"));
+				 //rs.getString("Status");
+				 //rs.getString("Due_Date");
+				 p.txtNotes.setText(rs.getString("Notes"));
+				 //attachment = rs.getString("Attachment");
+				 p.txtOpenedBy.setText(rs.getString("Opened_By"));
+				 
+				 
+				 
+			}
+			
+		} catch (Exception e){
+
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
 	}
 }

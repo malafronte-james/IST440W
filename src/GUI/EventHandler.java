@@ -8,9 +8,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
-
 import javax.swing.*;
 import javax.swing.event.*;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import Database.*;
 import Properties.settingsHandler;
 import sql.console.ConsoleFrame;
@@ -99,6 +102,10 @@ public class EventHandler implements ActionListener
 		// userListPanel
 		userListPanel.addButton.addActionListener(this);
 		
+		// editErrorPanel
+		editErrorPanel.backButton.addActionListener(this);
+		editErrorPanel.saveButton.addActionListener(this);
+		
 		newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
 		sql.setDBPath(settings.getDatabasePath());
 		
@@ -148,6 +155,38 @@ public class EventHandler implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
+/*
+ * ================================= Edit Error =====================================================================
+ */			
+			if(e.getSource() == editErrorPanel.saveButton)
+			{
+				newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+				sql.updateError(editErrorPanel.txtEnfID.getText(),
+								editErrorPanel.txtSapUserName.getText(),
+								editErrorPanel.cmbDepartment.toString(),
+								editErrorPanel.cmbShift.toString(),
+								editErrorPanel.txtOpenedDate.getText(),
+								editErrorPanel.txtProcess.getText(),
+								editErrorPanel.txtSkuNumber.getText(),
+								editErrorPanel.txtLocationAffected.getText(),
+								editErrorPanel.txtQty.getText(),
+								editErrorPanel.txtDateOfError.getText(),
+								editErrorPanel.cmbStatus.toString(),
+								//editErrorPanel.txtDueDate.getText,
+								editErrorPanel.txtNotes.getText(),
+								//attachment,
+								editErrorPanel.txtOpenedBy.getText());
+			}
+			
+			if(e.getSource() == editErrorPanel.backButton)
+			{
+				
+			}
+			
+
+/*
+ * ================================= End Edit Error =================================================================
+ */	
 		
 		
 		
@@ -202,15 +241,44 @@ public class EventHandler implements ActionListener
 			//switch to addErrorJPanel
 			cd.show(cards, "addErrorPanel");
 			
-			// prefill some data
+			 //prefill some data
 			//addErrorPanel.txtDateOfError.setText(df.format(new Date()));
+			
+			// get next ENFID
+			newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+			addErrorPanel.txtEnfID.setText(Integer.toString(sql.getNumberOfErrors()+1));
 
 		}// end frame.addItem
 		
 		
 		if(e.getSource() == frame.viewItem)
 		{
+			try {
+				
+				Document doc = new Document();
+				PdfWriter.getInstance(doc, new FileOutputStream("C:\\temp\\Report.pdf"));
+				doc.open();
+				doc.add(new Paragraph("ENF",FontFactory.getFont(FontFactory.TIMES_BOLD, 18)));
+				doc.add(new Paragraph(new Date().toString()));
+				
+				PdfPTable table = new PdfPTable(1);
+				table.addCell("1");
+
+				doc.add(table);
+				
+				doc.close();
+				
+				// open file using default file
+				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+"C:\\temp\\Report.pdf");
 			
+			
+			} catch (FileNotFoundException | DocumentException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}// end frame.viewItem
 		
 		if(e.getSource() == frame.refreshErrorsItem)
@@ -301,7 +369,8 @@ public class EventHandler implements ActionListener
 		if(e.getSource() == frame.adminEditErrorItem || e.getSource() == frame.devEditErrorItem || e.getSource() == errorPanel.editButton)
 		{
 			String enfID = JOptionPane.showInputDialog("Enter ENF ID Number to edit:");
-			editErrorPanel.getInfo(enfID);
+			newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+			sql.getErrorData(enfID, editErrorPanel);
 			cd.show(cards, "editErrorPanel");
 			
 		}// end frame.adminEditItem || frame.devEditItem
@@ -312,12 +381,17 @@ public class EventHandler implements ActionListener
 			//switch to addUserJPanel
 			cd.show(cards, "addUserPanel");
 			
+			// get next UserID
+			newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+			addUserPanel.txtAdminID.setText(Integer.toString(sql.getNumberOfUsers()+1));
+			
 		}// end frame.addUserItem
 		
 		if (e.getSource() == frame.adminEditUserItem || e.getSource() == frame.devEditUserItem)
 		{
+			
 			String userID = JOptionPane.showInputDialog("Enter User ID Number to edit:");
-			editUserPanel.getInfo(userID);
+
 			cd.show(cards, "editUserPanel");
 		}
 		
@@ -534,9 +608,9 @@ public class EventHandler implements ActionListener
  */
 		if(e.getSource() == settingsPanel.settingsSaveButton)
 		{
-			settings.savePaths(settingsPanel.txtDatabasePath.getText(), settingsPanel.txtXmlPath.getText());
+			settings.savePaths(settingsPanel.txtDatabasePath.getText(), settingsPanel.txtPdfPath.getText());
 			settingsPanel.txtDatabasePath.setText(settings.getDatabasePath());
-			settingsPanel.txtXmlPath.setText(settings.getXmlPath());
+			settingsPanel.txtPdfPath.setText(settings.getPdfPath());
 		}
 		
 		if(e.getSource() == settingsPanel.chooseDatabaseFile)
@@ -559,7 +633,7 @@ public class EventHandler implements ActionListener
 	        if (returnValue == JFileChooser.APPROVE_OPTION) 
 	        {
 	          File selectedFile = databaseFileChooser.getSelectedFile();
-	          settingsPanel.txtXmlPath.setText(selectedFile.getAbsolutePath());
+	          settingsPanel.txtPdfPath.setText(selectedFile.getAbsolutePath());
 	        }
 		}
 /*

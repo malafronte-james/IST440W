@@ -13,9 +13,81 @@ import net.miginfocom.swing.*;
 public class editErrorJPanel extends JPanel
 {
 	JButton saveButton, backButton;
-	JTextField txtSapUserName, txtEnfID, txtOpenedDate, txtLocationAffected, txtDateOfError, txtSkuNumber, txtQty;
-	JComboBox cmbDepartment, cmbShift, cmbStatus;
+	public JTextField txtSapUserName, txtEnfID, txtOpenedDate, txtProcess, txtLocationAffected, txtDateOfError, txtSkuNumber, txtQty, txtOpenedBy;
+	public JComboBox cmbDepartment, cmbShift, cmbStatus;
+	public JTextArea txtNotes;
 	
+	/**
+	 * @param txtSapUserName the txtSapUserName to set
+	 */
+	public void setTxtSapUserName(String txtSapUserName) {
+		this.txtSapUserName.setText(txtSapUserName);
+		
+	}
+
+	/**
+	 * @param txtEnfID the txtEnfID to set
+	 */
+	public void setTxtEnfID(String txtEnfID) {
+		this.txtEnfID.setText(txtEnfID);
+	}
+
+	/**
+	 * @param txtOpenedDate the txtOpenedDate to set
+	 */
+	public void setTxtOpenedDate(String txtOpenedDate) {
+		this.txtOpenedDate.setText(txtOpenedDate);
+	}
+
+	/**
+	 * @param txtLocationAffected the txtLocationAffected to set
+	 */
+	public void setTxtLocationAffected(String txtLocationAffected) {
+		this.txtLocationAffected.setText(txtLocationAffected);
+	}
+
+	/**
+	 * @param txtDateOfError the txtDateOfError to set
+	 */
+	public void setTxtDateOfError(String txtDateOfError) {
+		this.txtDateOfError.setText(txtDateOfError);
+	}
+
+	/**
+	 * @param txtSkuNumber the txtSkuNumber to set
+	 */
+	public void setTxtSkuNumber(String txtSkuNumber) {
+		this.txtSkuNumber.setText(txtSkuNumber);
+	}
+
+	/**
+	 * @param txtQty the txtQty to set
+	 */
+	public void setTxtQty(String txtQty) {
+		this.txtQty.setText(txtQty);
+	}
+
+	/**
+	 * @param cmbDepartment the cmbDepartment to set
+	 */
+	public void setCmbDepartment(String cmbDepartment) {
+		//this.cmbDepartment = cmbDepartment;
+	}
+
+	/**
+	 * @param cmbShift the cmbShift to set
+	 */
+	public void setCmbShift(String cmbShift) {
+		//this.cmbShift = cmbShift;
+	}
+
+	/**
+	 * @param cmbStatus the cmbStatus to set
+	 */
+	public void setCmbStatus(String cmbStatus) {
+		//this.cmbStatus = cmbStatus;
+	}
+
 	editErrorJPanel()
 	{
 		super();
@@ -103,11 +175,11 @@ public class editErrorJPanel extends JPanel
     	
     	// opened by
     	centerPanel.add(new JLabel("Opened By"));
-    	centerPanel.add(new JTextField(5), "wrap, pushx, growx");
+    	centerPanel.add(txtOpenedBy = new JTextField(5), "wrap, pushx, growx");
     	
     	// location affected
     	centerPanel.add(new JLabel("Location Affected"));
-    	centerPanel.add(new JTextField(5), "wrap, pushx, growx");
+    	centerPanel.add(txtLocationAffected = new JTextField(5), "wrap, pushx, growx");
     	
     	// date of error
     	centerPanel.add(new JLabel("Date of Error"));
@@ -137,11 +209,11 @@ public class editErrorJPanel extends JPanel
     	
     	// Process or Location
     	centerPanel.add(new JLabel("Process or Location"));
-    	centerPanel.add(new JTextField(5), "wrap, pushx, growx");
+    	centerPanel.add(txtProcess = new JTextField(5), "wrap, pushx, growx");
     	
     	// Notes
     	centerPanel.add(new JLabel("Notes"));
-    	centerPanel.add(new JTextArea(5,5), "wrap, pushx, growx");
+    	centerPanel.add(txtNotes = new JTextArea(5,5), "wrap, pushx, growx");
     	
     	// Attachments
     	centerPanel.add(new JLabel("Attachments"), "wrap");
