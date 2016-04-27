@@ -171,5 +171,13 @@ public class editErrorJPanel extends JPanel
 		      	
 		return;
     }// end buildSouthPanel
+    
+    /**
+     * Get information for requested ENF
+     */
+    public void getInfo(String enfID)
+    {
+    	
+    }
 	
 }

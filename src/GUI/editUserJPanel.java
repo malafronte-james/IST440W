@@ -10,7 +10,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class editUserJPanel extends JPanel
 {
-	JButton addUserSaveButton;
+	JButton editUserSaveButton;
 	JTextField txtFirstName, txtAdminID, txtLastName, txtJobTitle, txtEmail;
 	JComboBox cmbDepartment;
 	
@@ -112,13 +112,22 @@ public class editUserJPanel extends JPanel
  	 //instantiate all the JPanels
  	 JPanel southPanel = new JPanel();
 
- 	 addUserSaveButton = new JButton("Save");
- 	 southPanel.add(addUserSaveButton);
+ 	 editUserSaveButton = new JButton("Save");
+ 	 southPanel.add(editUserSaveButton);
  	 
  	 //add southPanel to the JPanel
  	 this.add("South", southPanel);
 		      	
 		return;
     }// end buildSouthPanel
+    
+    /**
+     * Fill in information for edits
+     * @param userID
+     */
+    public void getInfo(String userID)
+    {
+    	
+    }
 	
 }

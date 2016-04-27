@@ -4,17 +4,21 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import Database.*;
 import Properties.settingsHandler;
+import sql.console.ConsoleFrame;
 
 public class EventHandler implements ActionListener
 {
 
 	settingsHandler settings = new settingsHandler();	
-	Connection connection = null;
 	LoginMenu login;
 	ChangePasswordMenu changePassword;
 	ReportManager reportManagerMenu;
@@ -27,8 +31,8 @@ public class EventHandler implements ActionListener
 	editErrorJPanel editErrorPanel = new editErrorJPanel();
 	mainJFrame frame = new mainJFrame();
 	String username;
-	
-	PreparedStatement pst;
+	private String loggedIn;
+
 	
 	addErrorJPanel addErrorPanel = new addErrorJPanel();
 	
@@ -49,9 +53,7 @@ public class EventHandler implements ActionListener
 		cards.add(settingsPanel, "settingsPanel");
 		cards.add(editErrorPanel, "editErrorPanel");
 		cards.add(editUserPanel, "editUserPanel");
-		
-		
-		
+				
 		// show the errorPanel when the application loads
 		cd.show(cards, "errorPanel");
 		
@@ -65,6 +67,7 @@ public class EventHandler implements ActionListener
 		frame.logoutItem.addActionListener(this);
 		frame.changePwItem.addActionListener(this);
 		frame.reportItem.addActionListener(this);
+		
 		// admin
 		frame.adminAddUserItem.addActionListener(this);
 		frame.adminDeleteErrorItem.addActionListener(this);
@@ -72,6 +75,7 @@ public class EventHandler implements ActionListener
 		frame.adminEditUserItem.addActionListener(this);
 		frame.adminSendReportsItem.addActionListener(this);
 		frame.adminUserListItem.addActionListener(this);
+		
 		// dev
 		frame.devAddUserItem.addActionListener(this);
 		frame.devDeleteErrorItem.addActionListener(this);
@@ -95,8 +99,14 @@ public class EventHandler implements ActionListener
 		// userListPanel
 		userListPanel.addButton.addActionListener(this);
 		
+		newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+		sql.setDBPath(settings.getDatabasePath());
+		
 	}// end EventHandler
 
+	/**
+	 * 
+	 */
 	private void createLoginMenu()
 	{
 		login = new LoginMenu();
@@ -105,6 +115,9 @@ public class EventHandler implements ActionListener
 		return;
 	}
 	
+	/**
+	 * 
+	 */
 	private void createChangePWMenu()
 	{
 		changePassword = new ChangePasswordMenu();
@@ -113,6 +126,9 @@ public class EventHandler implements ActionListener
 		return;
 	}
 	
+	/**
+	 * 
+	 */
 	private void createReportManagerMenu()
 	{
 		reportManagerMenu = new ReportManager();
@@ -120,23 +136,74 @@ public class EventHandler implements ActionListener
 		return;
 	}
 	
+	/**
+	 * 
+	 * @param enfNumber
+	 */
 	private void createEditErrorForm(String enfNumber)
 	{
-		
+		editErrorPanel.getInfo(enfNumber);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		/*
-		 * 
-		 * Frame Actions
-		 * 
-		 */
+		
+		
+		
+		
+/*
+ * ================================= Frame Menu =====================================================================
+ */			
+		try{
+			
+			
+			if(e.getSource() == frame.logoutItem)
+			 {
+				// confirm logout
+				int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+				
+				// if yes
+				if (confirm == JOptionPane.YES_OPTION)
+				{
+				
+					 JOptionPane.showMessageDialog(null,
+							 "Logged Out!",
+							 "Logged Out!",
+							 JOptionPane.INFORMATION_MESSAGE);
+					 
+					 frame.menuBar.remove(frame.adminMenu);
+					 frame.menuBar.remove(frame.developerMenu);
+					 frame.accountMenu.remove(frame.changePwItem);
+					 frame.accountMenu.remove(frame.logoutItem);				 
+					 errorPanel.editButton.setEnabled(false);
+					 frame.loginItem.setEnabled(true);
+					 
+					 frame.validate();
+					 frame.repaint();
+					 login.dispose();
+				}
+				else {
+					// stay logged in
+				}
+				 
+			 }// end login.loginButton
+		
+		}
+		
+		catch(Exception NotInstantiated){
+			
+		}
+
 		if(e.getSource() == frame.addItem || e.getSource() == errorPanel.addButton)
 		{
+			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+					
 			//switch to addErrorJPanel
 			cd.show(cards, "addErrorPanel");
+			
+			// prefill some data
+			//addErrorPanel.txtDateOfError.setText(df.format(new Date()));
 
 		}// end frame.addItem
 		
@@ -148,13 +215,7 @@ public class EventHandler implements ActionListener
 		
 		if(e.getSource() == frame.refreshErrorsItem)
 		{
-			try {
-				errorPanel.model.setRowCount(0);
-				errorPanel.model.getErrors(errorPanel.model, errorPanel.outputTable);
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
-			} 
+			refreshErrorTable();
 			
 		}// end frame.refreshErrorsItem
 		
@@ -202,15 +263,17 @@ public class EventHandler implements ActionListener
 		    System.exit(0);
 		}// end frame.exitItem
 		
-		if(e.getSource() == frame.adminEditErrorItem || e.getSource() == frame.devEditErrorItem || e.getSource() == errorPanel.editButton)
-		{
-			
-			createEditErrorForm(JOptionPane.showInputDialog("Enter ENF ID Number to edit:"));
-
-			cd.show(cards, "editErrorPanel");
-			
-		}// end frame.adminEditItem || frame.devEditItem
+/*
+ * ================================= End Frame Menu Actions =====================================================================
+ */	
 		
+		
+		
+/*
+ * ================================= Error Panel ========================================================================
+ */	
+		
+	
 		if(e.getSource() == errorPanel.printButton)
 		{
 			
@@ -222,14 +285,27 @@ public class EventHandler implements ActionListener
 					 JOptionPane.ERROR_MESSAGE);
 			
 		}// end errorPanel.printButton
+
+/*
+ * ================================= End Error Panel =====================================================================
+ */	
 		
 		
-		/*
-		 * 
-		 * Developer & Admin Menu
-		 * 
-		 * 
-		 */
+		
+		
+		
+/*
+ * ================================= Developer & Admin Menu =====================================================================
+ */	
+		
+		if(e.getSource() == frame.adminEditErrorItem || e.getSource() == frame.devEditErrorItem || e.getSource() == errorPanel.editButton)
+		{
+			String enfID = JOptionPane.showInputDialog("Enter ENF ID Number to edit:");
+			editErrorPanel.getInfo(enfID);
+			cd.show(cards, "editErrorPanel");
+			
+		}// end frame.adminEditItem || frame.devEditItem
+		
 		if (e.getSource() == frame.adminAddUserItem || e.getSource() == frame.devAddUserItem)
 		{
 			
@@ -240,13 +316,14 @@ public class EventHandler implements ActionListener
 		
 		if (e.getSource() == frame.adminEditUserItem || e.getSource() == frame.devEditUserItem)
 		{
-			JOptionPane.showInputDialog("Enter User ID Number to edit:");
+			String userID = JOptionPane.showInputDialog("Enter User ID Number to edit:");
+			editUserPanel.getInfo(userID);
 			cd.show(cards, "editUserPanel");
 		}
 		
 		if (e.getSource() == frame.adminDeleteErrorItem || e.getSource() == frame.devDeleteErrorItem)
 		{
-			JOptionPane.showInputDialog("Enter ENF ID Number to delete:");
+			String enfFID = JOptionPane.showInputDialog("Enter ENF ID Number to delete:");
 
 			// confirm delete
 			int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this error?", "Delete Error", JOptionPane.YES_NO_OPTION);
@@ -254,13 +331,22 @@ public class EventHandler implements ActionListener
 			// if yes
 			if (confirm == JOptionPane.YES_OPTION)
 			{
-			
-				 JOptionPane.showMessageDialog(null,
+				newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+				sql.deleteError(enfFID);
+				JOptionPane.showMessageDialog(null,
 						 "Error Deleted!",
 						 "Deleted!",
 						 JOptionPane.INFORMATION_MESSAGE);
+				
+				// refresh table
+				try {
+					errorPanel.model.setRowCount(0);
+					errorPanel.model.getErrors(errorPanel.model, errorPanel.outputTable);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
+				} 
 				 
-				 //delete
 			}
 			else {
 				// cancel
@@ -285,39 +371,34 @@ public class EventHandler implements ActionListener
 			cd.show(cards, "settingsPanel");
 		}// end frame.settingsItem
 		
+		if(e.getSource() == frame.devSQLItem)
+		{
+			ConsoleFrame console = new ConsoleFrame();
+		}
+/*
+ * ================================= End Developer & Admin Menu =============================================================
+ */	
 		
 		
-		/*
-		 * 
-		 * Login Panel Actions
-		 * 
-		 */
+		
+		
+		
+/*
+ * ================================= Login Panel =====================================================================
+ */	
 		try{
 			
 
 			if(e.getSource() == login.loginButton)
 			 {		
-				connection = newSQLiteConnector.connect(settings.getDatabasePath());
-				try {
-					
-					String query = "select User_Name,Password,Access_Level_ID from User where User_Name=? and Password=?";
-					PreparedStatement pst = connection.prepareStatement(query);
-					pst.setString(1, login.userName.getText());
-					pst.setString(2, login.password.getText());
-					ResultSet rs = pst.executeQuery();
 
-					int count = 0;
-					int userLevel = 0;
-					
-					// cycle through results
-					while(rs.next())
-					{
-						count = count + 1;
-						userLevel = Integer.parseInt(rs.getString("Access_Level_ID"));
-					}
-				
-					rs.close();
-					pst.close();
+				newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+				loggedIn = login.userName.getText();
+				int count = 0;
+				count = sql.login(login.userName.getText(), login.password.getText());
+				System.out.println(count);
+				int userLevel = 0;
+				userLevel = sql.getUserLevel(loggedIn);
 					
 					// if at least one is returned the password and username are correct
 					if (count > 0)
@@ -358,14 +439,6 @@ public class EventHandler implements ActionListener
 								 "Wrong Credentials",
 								 JOptionPane.ERROR_MESSAGE);
 					}
-					
-					
-				} catch (SQLException sql) {
-					 JOptionPane.showMessageDialog(null,
-							 "Currently Unavailable",
-							 "Connection Error",
-							 JOptionPane.ERROR_MESSAGE);
-				}
 				 
 			 }// end login.loginButton
 		
@@ -374,85 +447,40 @@ public class EventHandler implements ActionListener
 		catch(Exception NotInstantiated){
 			
 		}
+/*
+ * ================================= End Login Panel =====================================================================
+ */			
 		
 		
-		try{
-			
-			
-			if(e.getSource() == frame.logoutItem)
-			 {
-				// confirm logout
-				int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
-				
-				// if yes
-				if (confirm == JOptionPane.YES_OPTION)
-				{
-				
-					 JOptionPane.showMessageDialog(null,
-							 "Logged Out!",
-							 "Logged Out!",
-							 JOptionPane.INFORMATION_MESSAGE);
-					 
-					 frame.menuBar.remove(frame.adminMenu);
-					 frame.menuBar.remove(frame.developerMenu);
-					 frame.accountMenu.remove(frame.changePwItem);
-					 frame.accountMenu.remove(frame.logoutItem);				 
-					 errorPanel.editButton.setEnabled(false);
-					 frame.loginItem.setEnabled(true);
-					 
-					 frame.validate();
-					 frame.repaint();
-					 login.dispose();
-				}
-				else {
-					// stay logged in
-				}
-				 
-			 }// end login.loginButton
 		
-		}
 		
-		catch(Exception NotInstantiated){
-			
-		}
-
 		
-		/*
-		 * 
-		 * userListPanel
-		 */
+/*
+ * ================================= User List Panel ======================================================================
+ */	
 		if(e.getSource() == userListPanel.addButton)
 		{
 			cd.show(cards, "addUserPanel");
 			
 		}// 
+/*
+ * ================================= End User List Panel ==================================================================
+ */	
 		
 		
+/*
+ * ================================= Change Password ======================================================================
+ */			
 		try {
 			
 			if(e.getSource() == changePassword.saveButton)
 			{
-				connection = newSQLiteConnector.connect(settings.getDatabasePath());
-				
-				try 
-				{
-					String query = "select * from User where UserName=?";
-					PreparedStatement pst = connection.prepareStatement(query);
-					pst.setString(1, username);
-					ResultSet rs = pst.executeQuery();
-	
-					int count = 0;
-					String password = null;
+
+				newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+					String password = sql.getPassword(loggedIn);
+
 					
-					// cycle through results
-					while(rs.next())
-					{
-						count = count + 1;
-						password = rs.getString("Password");
-						
-					}
-					
-					if (count > 0)
+					if (password.length() > 0)
 					{
 						// currentpassword is right
 						if (changePassword.currentPassword.getText().equals(password))
@@ -460,7 +488,9 @@ public class EventHandler implements ActionListener
 							//update to new password
 							if(changePassword.confirmNewPassword.getText().equals(changePassword.newPassword.getText()))
 							{
-								//password can be changed
+								System.out.println(changePassword.newPassword.getText());
+								System.out.println(loggedIn);
+								sql.changePassword(loggedIn, changePassword.newPassword.getText());
 							}
 							else
 							{
@@ -489,21 +519,19 @@ public class EventHandler implements ActionListener
 								 JOptionPane.ERROR_MESSAGE);
 					}
 					
-				} catch(Exception changePW)
-				{
-					 JOptionPane.showMessageDialog(null,
-							 "Currently Unavailable",
-							 "Connection Error",
-							 JOptionPane.ERROR_MESSAGE);
-				}
 			}//
 		} catch(Exception e2) {
 			
 		}// end try catch for changePW
+/*
+ * ================================= End Change Password ======================================================================
+ */	
+
 		
-		/*
-		 * Settings Panel
-		 */
+
+/*
+ * ================================= Settings Panel ============================================================================
+ */
 		if(e.getSource() == settingsPanel.settingsSaveButton)
 		{
 			settings.savePaths(settingsPanel.txtDatabasePath.getText(), settingsPanel.txtXmlPath.getText());
@@ -534,8 +562,38 @@ public class EventHandler implements ActionListener
 	          settingsPanel.txtXmlPath.setText(selectedFile.getAbsolutePath());
 	        }
 		}
+/*
+ * ================================= End Settings Panel ============================================================================
+ */
 		
 	}// end ActionPerformed
+	
+	/**
+	 * refresh the error table data
+	 */
+	private void refreshErrorTable()
+	{
+		try {
+			errorPanel.model.setRowCount(0);
+			errorPanel.model.getErrors(errorPanel.model, errorPanel.outputTable);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
+		} 
+	}
 
+	/**
+	 * Refresh the user table data
+	 */
+	private void refreshUserTable()
+	{
+		try {
+			errorPanel.model.setRowCount(0);
+			errorPanel.model.getErrors(errorPanel.model, errorPanel.outputTable);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
+		} 
+	}
 
 }

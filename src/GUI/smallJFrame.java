@@ -12,11 +12,11 @@ import javax.swing.UIManager.LookAndFeelInfo;
 public class smallJFrame extends JFrame 
 {
 
-	smallJFrame(String title, int length, int width)
+	protected smallJFrame(String title, int length, int width)
 	{
 		super(title);
 		
-	     this.setIconImage(new ImageIcon(getClass().getResource("Images/windowIcon32.jpg")).getImage());
+	     //this.setIconImage(new ImageIcon(getClass().getResource("Images/windowIcon32.jpg")).getImage());
 	     
  		//set look and feel to nimbus
  		try 

@@ -1,13 +1,10 @@
 package GUI;
 
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.Properties;
-
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 import org.jdatepicker.impl.*;
-
 import net.miginfocom.swing.*;
 
 public class addErrorJPanel extends JPanel
@@ -90,6 +87,10 @@ public class addErrorJPanel extends JPanel
     	cmbShift = new JComboBox();
     	centerPanel.add(cmbShift, "wrap, pushx, growx");
     	
+    	// get local date
+    	LocalDate now = LocalDate.now();
+
+    	
     	// opened date
     	centerPanel.add(new JLabel("Opened Date"));
     	UtilDateModel model = new UtilDateModel();
@@ -97,6 +98,7 @@ public class addErrorJPanel extends JPanel
     	p.put("text.today", "Today");
     	p.put("text.month", "Month");
     	p.put("text.year", "Year");
+    	model.setDate(now.getYear(), now.getMonthValue(), now.getDayOfMonth());
     	JDatePanelImpl openedDatePanel = new JDatePanelImpl(model, p);
     	JDatePickerImpl openedDatePicker = new JDatePickerImpl(openedDatePanel, new DateComponentFormatter());
     	centerPanel.add(openedDatePicker, "wrap, pushx");
@@ -116,7 +118,7 @@ public class addErrorJPanel extends JPanel
     	errorDpProperties.put("text.today", "Today");
     	errorDpProperties.put("text.month", "Month");
     	errorDpProperties.put("text.year", "Year");
-    	JDatePanelImpl errorDatePanel = new JDatePanelImpl(model, errorDpProperties);
+    	JDatePanelImpl errorDatePanel = new JDatePanelImpl(errorDateModel, errorDpProperties);
     	JDatePickerImpl errorDatePicker = new JDatePickerImpl(errorDatePanel, new DateComponentFormatter());
     	centerPanel.add(errorDatePicker, "wrap, pushx");
     	

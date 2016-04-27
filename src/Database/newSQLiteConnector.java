@@ -1,51 +1,556 @@
 package Database;
 
 import java.sql.*;
-
 import javax.swing.JOptionPane;
 
 public class newSQLiteConnector {
 
-	static Connection connection = null;
-	String sDbLocation = null;
+	private Connection connection = null;
+	private String sDbLocation;
 	
-	public static Connection connect(String dbLocation)
+	public newSQLiteConnector(String dbLocation)
 	{
-		String sJdbc = "jdbc:sqlite";
-		String sDbLocation = dbLocation;
-		String url = sJdbc + ":" + sDbLocation;
-		
-		try {
-			Class.forName("org.sqlite.JDBC");
-			Connection connection = DriverManager.getConnection(url);
-			
-			System.out.println("Connected using newSQLiteConnector");
-			
-			return connection;
-		} catch(Exception e) 
-		{
-			JOptionPane.showMessageDialog(null, e);
-			return null;
-		}
-		
+		sDbLocation = dbLocation;
+					
 	}
 	
-	public void login(String username, String password)
+	/**
+	 * 
+	 * @return 
+	 * @throws SQLException
+	 */
+    public void connect() throws SQLException {
+    	
+		String sJdbc = "jdbc:sqlite";
+		String url = sJdbc + ":" + sDbLocation;
+		
+        if (connection != null // if the connection exists
+             && !connection.isClosed() // and has not been closed 
+             && connection.isValid(0)) { // and appears to be functioning (with a test timeout of 0ms)
+             return; // skip connection creation
+        }
+
+        // create the connection
+        connection = DriverManager.getConnection(url);    
+		System.out.println("Connected using Connector.");
+		
+		return;
+		
+    }
+	
+	/**
+	 * Update user's password
+	 * @param username
+	 * @param password
+	 */
+	public void changePassword(String username, String password)
 	{
-		connect(sDbLocation);
 		
 		try {
 			
-			String query = "select * from User where User_Name=? and Password=?";
-			PreparedStatement pst = connection.prepareStatement(query);
-			pst.setString(0, username);
-			pst.setString(1, password);
+			connect();
 			
+			String query = "UPDATE User SET Password ='?' WHERE User_Name='?'";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(0, password);
+			pst.setString(1, username);
+			
+			int rs = pst.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+		
+
+	}
+	
+	/**
+	 * Get password for user to check if login is correct
+	 * @param username
+	 * @param password
+	 */
+	public int login(String username, String password)
+	{
+		int count = 0;
+		
+		try {
+			
+			connect();
+			
+			String query = "select User_Name,Password from User where User_Name=? and Password=?";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, username);
+			pst.setString(2, password);
 			ResultSet rs = pst.executeQuery();
+
+			// cycle through results
+			while(rs.next())
+			{
+				System.out.println("Connected using Connector.");
+				count = count + 1;
+			}
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			
+			 JOptionPane.showMessageDialog(null,
+					 "Login Currently Unavailable",
+					 "Connection Error",
+					 JOptionPane.ERROR_MESSAGE);
+			 
+				return count;
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
 		}
+
+		return count;
+	}
+	
+	/**
+	 * 
+	 * @param username
+	 * @return userlevel
+	 */
+	public int getUserLevel(String username)
+	{
+		int userLevel = 0;
+		
+		try {
+			
+			connect();
+			
+			String query = "select User_Name,Access_Level_ID from User where User_Name=?";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, username);
+			ResultSet rs = pst.executeQuery();
+			
+			// cycle through results
+			while(rs.next())
+			{
+				//count = count + 1;
+				userLevel = Integer.parseInt(rs.getString("Access_Level_ID"));
+			}
+			
+		} catch (Exception e){
+			 JOptionPane.showMessageDialog(null,
+					 "Login Currently Unavailable",
+					 "Connection Error",
+					 JOptionPane.ERROR_MESSAGE);
+				return userLevel;
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+		
+		return userLevel;
+
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getPassword(String username)
+	{
+
+		String password = null;
+		try 
+		{
+			
+			connect();
+			
+			String query = "SELECT * FROM User WHERE User_Name=?";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, username);
+			ResultSet rs = pst.executeQuery();
+			
+			// cycle through results
+			while(rs.next())
+			{
+				//count = count + 1;
+				password = rs.getString("Password");
+				
+			}
+			
+		      
+		} catch (Exception changePW) {
+			 JOptionPane.showMessageDialog(null,
+					 "Currently Unavailable",
+					 "Connection Error",
+					 JOptionPane.ERROR_MESSAGE);
+			 
+			 changePW.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+			
+		return password;
+		
+	}
+	
+	/**
+	 * 
+	 */
+	public String[] getUsers()
+	{
+		return null;
+		
+	}
+	
+	/**
+	 * 
+	 */
+	public String[] getDepartments()
+	{
+		return null;
+	}
+	
+	/**
+	 * Insert into the error table a new error
+	 */
+	public void createError(String Associate_First_Name,
+							String Associate_Last_Name,
+							String SAP_Username,
+							String department,
+							String shift,
+							String opened_date,
+							String location_Being_Audited,
+							String article_Number,
+							String location_Affected,
+							String quantity,
+							String date_Of_Error,
+							String status,
+							String due_date,
+							String notes,
+							String attachment,
+							String openedBy)
+	{
+		
+		try {
+			
+			connect();
+			
+			String query = "INSERT INTO Errors (ENF_ID,"
+					+ "Associate_First_Name,"
+					+ "Associate_Last_Name,"
+					+ "SAP_Username,"
+					+ "Department,"
+					+ "Shift,"
+					+ "Opened_Date,"
+					+ "Location_Being_Audited,"
+					+ "Article_Number,"
+					+ "Location_Affected,"
+					+ "Quantity,"
+					+ "Date_of_Error,"
+					+ "Status,"
+					+ "Due_Date,"
+					+ "Notes,"
+					+ "Attachment,"
+					+ "Opened_By)"
+					+ "VALUES ("
+					+ "'?'," //Associate_First_Name
+					+ "'?'," //Associate_Last_Name
+					+ "'?'," //SAP_Username
+					+ "'?'," //Department
+					+ "'?'," //Shift
+					+ "'?'," //Opened_Date
+					+ "'?'," //Location_Being_Audited
+					+ "'?'," //Article_Number
+					+ "'?'," //Location_Affected
+					+ "'?'," //Quantity
+					+ "'?'," //Date_of_Error
+					+ "'?'," //Status
+					+ "'?'," //Due_Date
+					+ "'?'," //Notes
+					+ "'?'," //Attachment
+					+ "'?';"; //Opened_By
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, Associate_First_Name);
+			pst.setString(2, Associate_Last_Name);
+			pst.setString(3, SAP_Username);
+			pst.setString(4, department);
+			pst.setString(5, shift);
+			pst.setString(6, opened_date);
+			pst.setString(7, location_Being_Audited);
+			pst.setString(8, article_Number);
+			pst.setString(9, location_Affected);
+			pst.setString(10, quantity);
+			pst.setString(11, date_Of_Error);
+			pst.setString(12, status);
+			pst.setString(13, due_date);
+			pst.setString(14, notes);
+			pst.setString(15, attachment);
+			pst.setString(16, openedBy);
+			
+			int rs = pst.executeUpdate();
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+	}
+	
+	/**
+	 * Delete a record from Errors using the ENF ID
+	 */
+	public void deleteError(String enfID)
+	{
+		
+		try {
+			
+			connect();
+			
+			String query = "DELETE FROM Errors WHERE ENF_ID=?";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, enfID);
+			
+			int rs = pst.executeUpdate();
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+	}
+	
+	/**
+	 * Update an Error
+	 */
+	public void updateError(String ENF_ID,
+			String Associate_First_Name,
+			String Associate_Last_Name,
+			String SAP_Username,
+			String department,
+			String shift,
+			String opened_date,
+			String location_Being_Audited,
+			String article_Number,
+			String location_Affected,
+			String quantity,
+			String date_Of_Error,
+			String status,
+			String due_date,
+			String notes,
+			String attachment,
+			String openedBy)
+	{
+		
+		try {
+			
+			connect();
+			
+			String query = "UPDATE Errors SET "
+					+ "Associate_First_Name = '?'," //Associate_First_Name
+					+ "Associate_Last_Name = '?'," // Associate_Last_Name
+					+ "SAP_Username = '?'," // SAP_Username
+					+ "Department = '?'," // department
+					+ "Shift = '?'," // shift
+					+ "Opened_Date = '?'," // opened_date
+					+ "Location_Being_Audited = '?'," // location_Being_Audited
+					+ "Article_Number = '?'," // article_Number
+					+ "Location_Affected = '?'," // location_Affected
+					+ "Quantity = '?'," // quantity
+					+ "Date_of_Error = '?'," // date_Of_Error
+					+ "Status = '?'," // status
+					+ "Due_Date = '?'," // due_date
+					+ "Notes = '?'," // notes
+					+ "Attachment = '?'," // attachment
+					+ "Opened_By) = '?'," // openedBy
+				    + "WHERE ENF_ID = '?';"; // ENF_ID
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, Associate_First_Name);
+			pst.setString(2, Associate_Last_Name);
+			pst.setString(3, SAP_Username);
+			pst.setString(4, department);
+			pst.setString(5, shift);
+			pst.setString(6, opened_date);
+			pst.setString(7, location_Being_Audited);
+			pst.setString(8, article_Number);
+			pst.setString(9, location_Affected);
+			pst.setString(10, quantity);
+			pst.setString(11, date_Of_Error);
+			pst.setString(12, status);
+			pst.setString(13, due_date);
+			pst.setString(14, notes);
+			pst.setString(15, attachment);
+			pst.setString(16, openedBy);
+			pst.setString(17, ENF_ID);
+			
+			
+			ResultSet rs = pst.executeQuery();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+	}
+	
+	/**
+	 * Create a new user
+	 */
+	public void createUser(String userID,
+			   			   String username,
+			   			   String password,
+			   			   String department,
+			   			   String accessLevel,
+			   			   String jobTitle,
+			   			   String email)
+	{
+		
+		try {
+			
+			connect();
+			
+			String query = "INSERT INTO User ("
+					+ "User_ID,"
+					+ "User_Name,"
+					+ "Password,"
+					+ "Department,"
+					+ "Access_Level_ID,"
+					+ "Job_Title,"
+					+ "Email)"
+					+ "VALUES ("
+					+ "'?'," //User_ID
+					+ "'?'," //User_Name
+					+ "'?'," //Password
+					+ "'?'," //Department
+					+ "'?'," //Access_Level_ID
+					+ "'?'," //Job_Title
+					+ "'?');"; //Email
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, userID);
+			pst.setString(2, username);
+			pst.setString(3, password);
+			pst.setString(4, department);
+			pst.setString(5, accessLevel);
+			pst.setString(6, jobTitle);
+			pst.setString(7, email);
+			
+			ResultSet rs = pst.executeQuery();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+	}
+	
+	/**
+	 * Delete a user
+	 */
+	public void deleteUser(String userID)
+	{
+		
+		try {
+			
+			connect();
+			
+			String query = "DELETE FROM User WHERE User_ID=?";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, userID);
+			
+			ResultSet rs = pst.executeQuery();
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void updateUser(String userID,
+						   String username,
+						   String password,
+						   String department,
+						   String accessLevel,
+						   String jobTitle,
+						   String email)
+	{
+		
+		try {
+			
+			connect();
+			
+			String query = "UPDATE User SET "
+					+ "User_Name=?,"
+					+ " Password=?,"
+					+ " Department=?,"
+					+ "Access_Level_ID=?,"
+					+ "Job_Title=?,"
+					+ "Email=?";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, username);
+			pst.setString(2, password);
+			pst.setString(3, department);
+			pst.setString(4, accessLevel);
+			pst.setString(5, jobTitle);
+			pst.setString(6, email);
+			
+			ResultSet rs = pst.executeQuery();
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+	}
+
+	public void setDBPath(String databasePath) {
+		
+		sDbLocation = databasePath;
 		
 	}
 }
