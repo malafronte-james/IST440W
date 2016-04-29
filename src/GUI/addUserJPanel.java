@@ -11,8 +11,9 @@ import net.miginfocom.swing.MigLayout;
 public class addUserJPanel extends JPanel
 {
 	JButton addUserSaveButton;
-	JTextField txtFirstName, txtAdminID, txtLastName, txtJobTitle, txtEmail;
-	JComboBox cmbDepartment;
+	JTextField txtSapUserName, txtAdminID, txtJobTitle, txtEmail;
+	JComboBox cmbDepartment, cmbAccessLevel;
+	public JPasswordField txtPassword, txtConfirmPassword;
 	
 	addUserJPanel()
 	{
@@ -73,15 +74,20 @@ public class addUserJPanel extends JPanel
     	centerPanel.add(txtAdminID, "wrap, pushx");
     	txtAdminID.setEditable(false);
     	
-    	// First Name
-    	centerPanel.add(new JLabel("First Name"));
-    	txtFirstName = new JTextField(10);
-    	centerPanel.add(txtFirstName, "wrap, pushx, growx");
+    	// SAPuserName
+    	centerPanel.add(new JLabel("SAP username"));
+    	txtSapUserName = new JTextField(10);
+    	centerPanel.add(txtSapUserName, "wrap, pushx, growx");    	
     	
-    	// Last Name
-    	centerPanel.add(new JLabel("Last Name"));
-    	txtLastName = new JTextField(10);
-    	centerPanel.add(txtLastName, "wrap, pushx, growx");
+    	// Password
+    	centerPanel.add(new JLabel("Password"));
+    	txtPassword = new JPasswordField(10);
+    	centerPanel.add(txtPassword, "wrap, pushx, growx");
+    	
+    	// Confirm Password
+    	centerPanel.add(new JLabel("Confirm Password"));
+    	txtConfirmPassword = new JPasswordField(10);
+    	centerPanel.add(txtConfirmPassword, "wrap, pushx, growx");
     	
     	// E-Mail Address
     	centerPanel.add(new JLabel("E-Mail Address"));
@@ -90,13 +96,18 @@ public class addUserJPanel extends JPanel
     	
     	// Department
     	centerPanel.add(new JLabel("Department"));
-    	cmbDepartment = new JComboBox();
+    	cmbDepartment = new JComboBox( new String[] {"Dot Com", "QA", "Receiving","Replenishment","Retail Picking","Distro","Shipping"});
     	centerPanel.add(cmbDepartment, "wrap, pushx, growx");
     	
     	// Job Title
     	centerPanel.add(new JLabel("Job Title"));
     	txtJobTitle = new JTextField(10);
     	centerPanel.add(txtJobTitle, "wrap, pushx, growx");
+    	
+    	// AccessLevel
+    	centerPanel.add(new JLabel("Access Level"));
+    	cmbAccessLevel = new JComboBox( new String[] {"Administrator", "Developer"});
+    	centerPanel.add(cmbAccessLevel, "wrap, pushx, growx");
     	
     	// add centerPanel to the contentPane
     	add(centerScroll, BorderLayout.CENTER);

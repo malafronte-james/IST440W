@@ -177,254 +177,51 @@ public class NewDefaultTableModel extends DefaultTableModel
 	}// end getUsers
 	
 	
-	
-			
-	/**
-	 * Updates the database with all table changes
-	 * @param output
-	 * @param outputTable
-	 */
-	public void updateDatabase(JTable outputTable)
+	public void sqlConsoleQuery(DefaultTableModel output, JTable outputTable, String query)
+			throws SQLException, ClassNotFoundException, FileNotFoundException, IOException 
 	{
-		int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to confirm these update(s)?", "Confirmation", JOptionPane.WARNING_MESSAGE);
 		
-		if (confirm == JOptionPane.YES_OPTION)
-		{
-				
-			//open the database connection
-			openConnection();
-			
-			for (int i = 0; i < outputTable.getRowCount(); i++)
-			{
-			
-				try {
-					
-					//declare and instantiate a statement
-					Statement statement = connection.createStatement();
-					
-					//create update statement 
-					String updateSQL = "UPDATE " + tableName + " SET " + 
-							"name='" + outputTable.getModel().getValueAt(i,  1) + "', " + /*partName - varchar*/
-							"description='" + outputTable.getModel().getValueAt(i,  2) + "', " + /*partDescription - varchar*/
-							"price=" + outputTable.getModel().getValueAt(i,  3) +  /*partPrice - int*/
-							" WHERE partNumber=" + outputTable.getModel().getValueAt(i,  0); /*partNumber - int*/
-							
-					//run update
-					statement.execute(updateSQL);
-					successFlag = true;
-					
-				} catch (SQLException e) {
-					JOptionPane.showMessageDialog(null, "Error in SQL Statement.\n\nCheck edited cells for illegal values.", "Error", JOptionPane.ERROR_MESSAGE);
-					successFlag = false;
-				}// end try-catch
-				
-				finally {
-					// Close the connection
-					closeConnection();
-				}
-				
-			}// end for
-			
-			if (successFlag == true)
-			{
-				JOptionPane.showMessageDialog(null, "Row(s) Updated Successfully!", "Update Success", JFrame.EXIT_ON_CLOSE);
-				successFlag = false;
-			}// end if
-			
-		}
-		
-		if (confirm == JOptionPane.NO_OPTION)
-		{
-			JOptionPane.showMessageDialog(null, "Action Cancelled!");
-		}
-		
-		if (confirm == JOptionPane.CANCEL_OPTION)
-		{
-			JOptionPane.showMessageDialog(null, "Action Cancelled!");
-		}
-		
-				
-	}// end updateDatabase
-	
-	/**
-	 * 
-	 * @param enf
-	 */
-	public void editRecord(String enf, settingsJPanel settingsPanel)
-	{
 		//open the database connection
 		openConnection();
 		
 		try {
 			
-			String query = "SELECT ENF_ID,Opened_Date,Opened_By,Date_of_Error,Status,Due_Date FROM Errors where ENF_ID=?";
-			PreparedStatement pst = connection.prepareStatement(query);
-			pst.setString(0, enf);
-			rs = pst.executeQuery();
+			rs = stat.executeQuery(query);
 			
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null,
-					"Error connecting to errorData, check path settings.",
-					"Error Connection to database.",
+					"Please check your SQL syntax.",
+					"Error with SQL.",
 					JOptionPane.ERROR_MESSAGE);
 		}
 
-		// Iterate through the result and print the student names
-		try {
-			while (rs.next())
+		ResultSetMetaData rsmd = rs.getMetaData();
+		for (int i = 1; i <= rsmd.getColumnCount(); i++)
 			{
-				//get all record information
-				enf_ID = rs.getString("ENF_ID");
-				opened_Date = rs.getString("Opened_Date");
-				opened_by = rs.getString("Opened_By");
-				date_of_error = rs.getString("Date_of_Error");
-				status = rs.getString("Status");
-				due_date = rs.getString("Due_Date");
-			   
-				//out put it to the table
-				//output = (DefaultTableModel) outputTable.getModel();
-				//.addRow(new Object[]{enf_ID, opened_Date, opened_by, date_of_error, status, due_date});
-			   
+				String name = rsmd.getColumnName(i);
+				output.addColumn(name);
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		// Iterate through the result and print the student names
+		while (rs.next())
+		{
+			Object[] o = new Object[rsmd.getColumnCount()];
+			//get all record information
+			for (int i = 0; i < rsmd.getColumnCount(); i++)
+			{
+				o[i] = rs.getObject(i);
+			}
+			
+			//out put it to the table
+			output = (DefaultTableModel) outputTable.getModel();
+			output.addRow(o);
+			
 		}// end while
 			
 		// Close the connection
 		closeConnection();
-	}
+		
+	}// end getErrors
 	
-	
-	/**
-	 * Deletes a record from the database
-	 * @param outputTable
-	 */
-	public void deleteDatabase(JTable outputTable)
-	{
-		int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to confirm this delete?", "Confirmation", JOptionPane.WARNING_MESSAGE);
-		
-		if (confirm == JOptionPane.YES_OPTION)
-		{
-		
-			//open the database connection
-			openConnection();
-			
-			for (int i = 0; i < outputTable.getRowCount(); i++)
-			{
-				
-				try {
-					
-					//declare and instantiate a statement
-					Statement statement = connection.createStatement();
-					
-					//create update statement 
-					String deleteSQL = "DELETE " + tableName + " SET " + 
-							"name='" + outputTable.getModel().getValueAt(i,  1) + "', " + /*partName - varchar*/
-							"description='" + outputTable.getModel().getValueAt(i,  2) + "', " + /*partDescription - varchar*/
-							"price=" + outputTable.getModel().getValueAt(i,  3) +  /*partPrice - int*/
-							" WHERE partNumber=" + outputTable.getModel().getValueAt(i,  0); /*partNumber - int*/
-							
-					//run update
-					statement.execute(deleteSQL);
-					successFlag = true;
-					
-				} catch (SQLException e) {
-					JOptionPane.showMessageDialog(null, "Error in SQL Statement.\n\nCheck edited cells for illegal values.", "Error", JOptionPane.ERROR_MESSAGE);
-					successFlag = false;
-				}// end try-catch
-				
-				finally {
-					// Close the connection
-					closeConnection();
-				}
-				
-			}// end for
-			
-			if (successFlag == true)
-			{
-				JOptionPane.showMessageDialog(null, "Row(s) Deleted Successfully!", "Delete Success", JFrame.EXIT_ON_CLOSE);
-				successFlag = false;
-			}// end if
-			
-		}		
-		
-		if (confirm == JOptionPane.NO_OPTION)
-		{
-			JOptionPane.showMessageDialog(null, "Action Cancelled!");
-		}
-		
-		if (confirm == JOptionPane.CANCEL_OPTION)
-		{
-			JOptionPane.showMessageDialog(null, "Action Cancelled!");
-		}
-	}// end updateDatabase
-	
-	
-	
-	
-	/**
-	 * adds a record to the database
-	 * @param sku
-	 * @param artistName
-	 * @param albumTitle
-	 * @param albumYear
-	 * @param genre
-	 * @param stockQuanity
-	 */
-	public void addDatabase(String sku, String artistName, String albumTitle, String albumYear, String genre, String stockQuanity)
-	{
-		int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to confirm this add?", "Confirmation", JOptionPane.WARNING_MESSAGE);
-		
-		if (confirm == JOptionPane.YES_OPTION)
-		{
-			
-			//open the database connection
-			openConnection();
-			
-			try {
-				
-				Statement statement = connection.createStatement();
-				
-				String sql = "INSERT INTO "+ tableName +
-		                   " VALUES (" + 
-		                   Integer.parseInt(sku) +
-		                   ",'" + artistName + /* artistName  - varChar*/
-		                   "','" + albumTitle + /* albumTitle - varChar */
-		                   "'," + Integer.parseInt(albumYear) + /* albumYear - int*/
-		                   ",'" + genre + /* genre  - varChar*/
-		                   "'," + Integer.parseInt(stockQuanity) +")"; /*stockQuantity - int*/
-				
-				//run query
-				statement.executeUpdate(sql);
-				successFlag = true;
-				
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(null, "Error in SQL Statement..", "Error", JOptionPane.ERROR_MESSAGE);
-				successFlag = false;
-			}
-			finally {
-				// Close the connection
-				closeConnection();
-			}
-			
-			if (successFlag == true)
-			{
-				JOptionPane.showMessageDialog(null, "Row(s) Added Successfully!", "Add Success", JFrame.EXIT_ON_CLOSE);
-				successFlag = false;
-			}// end if
-		
-		
-		}		
-		
-		if (confirm == JOptionPane.NO_OPTION)
-		{
-			JOptionPane.showMessageDialog(null, "Action Cancelled!");
-		}
-		
-		if (confirm == JOptionPane.CANCEL_OPTION)
-		{
-			JOptionPane.showMessageDialog(null, "Action Cancelled!");
-		}
-	}
+
 }

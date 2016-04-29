@@ -48,29 +48,30 @@ public class ReportManager extends smallJFrame
 		runButton = new JButton("Run");
 		
 		centerPanel.add(new JLabel("Date"), "span 1 2");
-		centerPanel.add(new JLabel("To:"), "gapleft 10");
-    	UtilDateModel toModel = new UtilDateModel();
+		centerPanel.add(new JLabel("From:"), "gapleft 10");
+    	UtilDateModel fromModel = new UtilDateModel();
     	Properties p = new Properties();
     	p.put("text.today", "Today");
     	p.put("text.month", "Month");
     	p.put("text.year", "Year");
-    	JDatePanelImpl toDatePanel = new JDatePanelImpl(toModel, p);
-    	JDatePickerImpl toDatePicker = new JDatePickerImpl(toDatePanel, new DateComponentFormatter());
-		centerPanel.add(toDatePicker);
-		
-		centerPanel.add(new JLabel("Select Report:"), "gapleft 20" );
-		cmbReportSelector = new JComboBox();
-		centerPanel.add(cmbReportSelector, "wrap, pushx, growx");
-		
-		centerPanel.add(new JLabel("From:"), "gapleft 10");
-    	UtilDateModel fromModel = new UtilDateModel();
     	JDatePanelImpl fromDatePanel = new JDatePanelImpl(fromModel, p);
     	JDatePickerImpl fromDatePicker = new JDatePickerImpl(fromDatePanel, new DateComponentFormatter());
 		centerPanel.add(fromDatePicker);
 		
+		centerPanel.add(new JLabel("Select Report:"), "gapleft 20" );
+		cmbReportSelector = new JComboBox(new String[] {"Overdue", "User Count", "Total Errors"});
+		centerPanel.add(cmbReportSelector, "wrap, pushx, growx");
+		
+		centerPanel.add(new JLabel("To:"), "gapleft 10");
+    	UtilDateModel toModel = new UtilDateModel();
+    	JDatePanelImpl toPanel = new JDatePanelImpl(toModel, p);
+    	JDatePickerImpl toDatePicker = new JDatePickerImpl(toPanel, new DateComponentFormatter());
+		centerPanel.add(toDatePicker);
+		
 		centerPanel.add(new JLabel("SAP User Name:"), "gapleft 20");
 		sapUserName = new JTextField(10);
 		centerPanel.add(sapUserName, "pushx, growx, wrap");
+		sapUserName.setEnabled(false);
 		
 		centerPanel.add(new JLabel(""), "span 3");
 		centerPanel.add(exportButton, "gapleft 60");

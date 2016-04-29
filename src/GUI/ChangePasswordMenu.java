@@ -7,7 +7,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class ChangePasswordMenu extends smallJFrame
 {
-	JTextField currentPassword, newPassword, confirmNewPassword;
+	JPasswordField currentPassword, newPassword, confirmNewPassword;
 	JButton saveButton;
 	
 	ChangePasswordMenu()
@@ -32,15 +32,15 @@ public class ChangePasswordMenu extends smallJFrame
 		
 		// add user name elements
 		centerPanel.add(new JLabel("Current Password:"));
-		centerPanel.add(currentPassword = new JTextField(25), "wrap");
+		centerPanel.add(currentPassword = new JPasswordField(25), "wrap");
 		
 		// add password elements
 		centerPanel.add(new JLabel("New Password:"));
-		centerPanel.add(newPassword = new JTextField(25), "wrap");
+		centerPanel.add(newPassword = new JPasswordField(25), "wrap");
 		
 		// add password elements
 		centerPanel.add(new JLabel("Confirm New Password:"));
-		centerPanel.add(confirmNewPassword = new JTextField(25), "wrap");
+		centerPanel.add(confirmNewPassword = new JPasswordField(25), "wrap");
 		
 		// add login button
 		centerPanel.add(saveButton = new JButton("Save"), "skip");

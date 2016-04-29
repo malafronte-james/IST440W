@@ -154,13 +154,13 @@ public class editErrorJPanel extends JPanel
     	
     	// Department
     	centerPanel.add(new JLabel("Department"));
-    	cmbDepartment = new JComboBox();
+    	cmbDepartment = new JComboBox(new String[] {"1"});
     	centerPanel.add(cmbDepartment, "wrap, pushx, growx");
     	
     	// Shift
     	centerPanel.add(new JLabel("Shift"));
-    	cmbShift = new JComboBox();
-    	centerPanel.add(cmbShift, "wrap, pushx, growx");
+    	cmbShift = new JComboBox(new String[] { "1", "2", "3", "W", "W3"});    	
+    	centerPanel.add(cmbShift, "wrap");
     	
     	// opened date
     	centerPanel.add(new JLabel("Opened Date"));
@@ -194,7 +194,7 @@ public class editErrorJPanel extends JPanel
     	
     	// Status
     	centerPanel.add(new JLabel("Status"));
-    	cmbStatus = new JComboBox();
+    	cmbStatus = new JComboBox(new String[] {"Active","Resolved"});
     	centerPanel.add(cmbStatus, "wrap");
     	
     	// Sku Number
@@ -244,12 +244,5 @@ public class editErrorJPanel extends JPanel
 		return;
     }// end buildSouthPanel
     
-    /**
-     * Get information for requested ENF
-     */
-    public void getInfo(String enfID)
-    {
-    	
-    }
-	
+
 }

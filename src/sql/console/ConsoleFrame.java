@@ -14,10 +14,11 @@ import net.miginfocom.swing.MigLayout;
 public class ConsoleFrame extends smallJFrame{
 
     public JButton runButton;
-    JTable outputTable;
-    NewDefaultTableModel model;
-    String databasePath;
-    JTextArea inputArea;
+    public JTable outputTable;
+    public NewDefaultTableModel model;
+    public String databasePath;
+    public JTextArea inputArea;
+    public JScrollPane scrolls;
     
 	public ConsoleFrame()
 	{
@@ -59,7 +60,8 @@ public class ConsoleFrame extends smallJFrame{
      * @throws SQLException 
      */
     private void buildCenterPanel()
-    {   	       	
+    {   
+    	/*
     	  //instantiate new table model
   		model = new NewDefaultTableModel(databasePath); 
             
@@ -68,12 +70,6 @@ public class ConsoleFrame extends smallJFrame{
           	  
         	  //set up table with borders and headers
         	  outputTable.setBorder(BorderFactory.createLineBorder(Color.black));
-        	  model.addColumn("User ID");
-        	  model.addColumn("User Name");
-        	  model.addColumn("Department");
-        	  model.addColumn("Shift");
-        	  model.addColumn("Job Title");
-        	  model.addColumn("E-Mail");
         	  
            	  //add the table to a scroll pane
          	  JScrollPane scrolls = new JScrollPane(outputTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -90,7 +86,7 @@ public class ConsoleFrame extends smallJFrame{
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
-         	  
+         	  */
      	  return;
     }// end buildCenterPanel
     

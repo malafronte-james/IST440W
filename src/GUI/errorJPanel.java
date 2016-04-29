@@ -83,8 +83,7 @@ public class errorJPanel extends JPanel
 			  	
 		         
 
-           
-           //instantiate JTable with tableModel
+              //instantiate JTable with tableModel
         	  outputTable = new JTable(model);
         	  
         	  //set up table with borders and headers

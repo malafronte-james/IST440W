@@ -13,6 +13,10 @@ public class addErrorJPanel extends JPanel
 	public JTextField txtSapUserName, txtEnfID, txtOpenedDate, txtProcess, txtLocationAffected, txtDateOfError, txtSkuNumber, txtQty, txtOpenedBy;
 	public JComboBox cmbDepartment, cmbShift, cmbStatus;
 	public JTextArea txtNotes;
+	public JDatePickerImpl openedDatePicker;
+	public JDatePickerImpl errorDatePicker;
+	public JDatePanelImpl openedDatePanel, errorDatePanel; 
+	public UtilDateModel errorDateModel, model;
 	
 	addErrorJPanel()
 	{
@@ -80,13 +84,13 @@ public class addErrorJPanel extends JPanel
     	
     	// Department
     	centerPanel.add(new JLabel("Department"));
-    	cmbDepartment = new JComboBox();
+    	cmbDepartment = new JComboBox(new String[] {"1"});
     	centerPanel.add(cmbDepartment, "wrap, pushx, growx");
     	
     	// Shift
     	centerPanel.add(new JLabel("Shift"));
-    	cmbShift = new JComboBox();
-    	centerPanel.add(cmbShift, "wrap, pushx, growx");
+    	cmbShift = new JComboBox(new String[] { "1", "2", "3", "W", "W3"});    	
+    	centerPanel.add(cmbShift, "wrap");
     	
     	// get local date
     	LocalDate now = LocalDate.now();
@@ -94,14 +98,15 @@ public class addErrorJPanel extends JPanel
     	
     	// opened date
     	centerPanel.add(new JLabel("Opened Date"));
-    	UtilDateModel model = new UtilDateModel();
+    	model = new UtilDateModel();
     	Properties p = new Properties();
+    	//model.setDate(now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+    	openedDatePanel = new JDatePanelImpl(model, p);
+    	openedDatePicker = new JDatePickerImpl(openedDatePanel, new DateComponentFormatter());
+    	
     	p.put("text.today", "Today");
     	p.put("text.month", "Month");
     	p.put("text.year", "Year");
-    	model.setDate(now.getYear(), now.getMonthValue(), now.getDayOfMonth());
-    	JDatePanelImpl openedDatePanel = new JDatePanelImpl(model, p);
-    	JDatePickerImpl openedDatePicker = new JDatePickerImpl(openedDatePanel, new DateComponentFormatter());
     	centerPanel.add(openedDatePicker, "wrap, pushx");
     	
     	// opened by
@@ -114,18 +119,18 @@ public class addErrorJPanel extends JPanel
     	
     	// date of error
     	centerPanel.add(new JLabel("Date of Error"));
-    	UtilDateModel errorDateModel = new UtilDateModel();
+    	errorDateModel = new UtilDateModel();
     	Properties errorDpProperties = new Properties();
+    	errorDatePanel = new JDatePanelImpl(errorDateModel, errorDpProperties);
+    	errorDatePicker = new JDatePickerImpl(errorDatePanel, new DateComponentFormatter());
     	errorDpProperties.put("text.today", "Today");
     	errorDpProperties.put("text.month", "Month");
     	errorDpProperties.put("text.year", "Year");
-    	JDatePanelImpl errorDatePanel = new JDatePanelImpl(errorDateModel, errorDpProperties);
-    	JDatePickerImpl errorDatePicker = new JDatePickerImpl(errorDatePanel, new DateComponentFormatter());
     	centerPanel.add(errorDatePicker, "wrap, pushx");
     	
     	// Status
     	centerPanel.add(new JLabel("Status"));
-    	cmbStatus = new JComboBox();
+    	cmbStatus = new JComboBox(new String[] {"Active","Resolved"});
     	centerPanel.add(cmbStatus, "wrap");
     	
     	// Sku Number

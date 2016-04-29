@@ -3,9 +3,11 @@ package GUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.URL;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.Date;
 import javax.swing.*;
@@ -15,7 +17,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import Database.*;
-import Properties.settingsHandler;
+import Properties.*;
+import Utilities.*;
 import sql.console.ConsoleFrame;
 
 public class EventHandler implements ActionListener
@@ -106,13 +109,26 @@ public class EventHandler implements ActionListener
 		editErrorPanel.backButton.addActionListener(this);
 		editErrorPanel.saveButton.addActionListener(this);
 		
+		// addErrorPanel
+		addErrorPanel.saveButton.addActionListener(this);
+		addErrorPanel.backButton.addActionListener(this);
+		
+		// addUserPanel
+		addUserPanel.addUserSaveButton.addActionListener(this);
+		
+		// editUserPanel
+		editUserPanel.editUserBackButton.addActionListener(this);
+		editUserPanel.editUserSaveButton.addActionListener(this);
+		
 		newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
 		sql.setDBPath(settings.getDatabasePath());
+		
+		System.out.println(System.getProperty("user.dir"));
 		
 	}// end EventHandler
 
 	/**
-	 * 
+	 * Create Login Menu
 	 */
 	private void createLoginMenu()
 	{
@@ -142,15 +158,7 @@ public class EventHandler implements ActionListener
 		
 		return;
 	}
-	
-	/**
-	 * 
-	 * @param enfNumber
-	 */
-	private void createEditErrorForm(String enfNumber)
-	{
-		editErrorPanel.getInfo(enfNumber);
-	}
+
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -161,26 +169,50 @@ public class EventHandler implements ActionListener
 			if(e.getSource() == editErrorPanel.saveButton)
 			{
 				newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
-				sql.updateError(editErrorPanel.txtEnfID.getText(),
-								editErrorPanel.txtSapUserName.getText(),
-								editErrorPanel.cmbDepartment.toString(),
-								editErrorPanel.cmbShift.toString(),
-								editErrorPanel.txtOpenedDate.getText(),
-								editErrorPanel.txtProcess.getText(),
-								editErrorPanel.txtSkuNumber.getText(),
-								editErrorPanel.txtLocationAffected.getText(),
-								editErrorPanel.txtQty.getText(),
-								editErrorPanel.txtDateOfError.getText(),
-								editErrorPanel.cmbStatus.toString(),
-								//editErrorPanel.txtDueDate.getText,
-								editErrorPanel.txtNotes.getText(),
-								//attachment,
-								editErrorPanel.txtOpenedBy.getText());
+				
+				if(editErrorPanel.txtEnfID.getText().length() > 0 &&
+				   editErrorPanel.txtSapUserName.getText().length() > 0 &&
+				   editErrorPanel.cmbDepartment.toString().length() > 0 &&
+				   editErrorPanel.cmbShift.toString().length() > 0 &&
+				   editErrorPanel.txtOpenedDate.getText().length() > 0 &&
+				   editErrorPanel.txtProcess.getText().length() > 0 && 
+				   editErrorPanel.txtSkuNumber.getText().length() > 0 &&
+				   editErrorPanel.txtLocationAffected.getText().length() > 0 &&
+				   editErrorPanel.txtQty.getText().length() > 0 &&
+				   editErrorPanel.txtDateOfError.getText().length() > 0 &&
+				   editErrorPanel.cmbStatus.toString().length() > 0 &&
+				   editErrorPanel.txtNotes.getText().length() > 0 &&
+				   editErrorPanel.txtOpenedBy.getText().length() > 0)
+				{
+					sql.updateError(editErrorPanel.txtEnfID.getText(),
+									editErrorPanel.txtSapUserName.getText(),
+									editErrorPanel.cmbDepartment.toString(),
+									editErrorPanel.cmbShift.toString(),
+									editErrorPanel.txtOpenedDate.getText(),
+									editErrorPanel.txtProcess.getText(),
+									editErrorPanel.txtSkuNumber.getText(),
+									editErrorPanel.txtLocationAffected.getText(),
+									editErrorPanel.txtQty.getText(),
+									editErrorPanel.txtDateOfError.getText(),
+									editErrorPanel.cmbStatus.toString(),
+									//editErrorPanel.txtDueDate.getText,
+									editErrorPanel.txtNotes.getText(),
+									//attachment,
+									editErrorPanel.txtOpenedBy.getText());
+				}
+				else {
+					 JOptionPane.showMessageDialog(frame,
+							 "Missing Information!",
+							 "Please fill in all information!",
+							 JOptionPane.INFORMATION_MESSAGE);
+				}
+				
 			}
 			
 			if(e.getSource() == editErrorPanel.backButton)
 			{
-				
+				refreshErrorTable();
+				cd.show(cards,"errorPanel");
 			}
 			
 
@@ -189,7 +221,80 @@ public class EventHandler implements ActionListener
  */	
 		
 		
-		
+	
+			
+			
+
+/*
+ * ================================= Edit User = =====================================================================
+ */				
+			if(e.getSource() == editUserPanel.editUserSaveButton)
+			{
+				newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+				
+				if(editUserPanel.txtSapUserName.getText().length() > 0 &&
+				   editUserPanel.txtAdminID.getText().length() > 0 &&
+				   editUserPanel.txtJobTitle.getText().length() > 0 && 
+				   editUserPanel.txtEmail.getText().length() > 0 &&
+				   editUserPanel.cmbAccessLevel.toString().length() > 0 &&
+				   editUserPanel.cmbDepartment.toString().length() > 0 &&
+				   editUserPanel.txtPassword.getPassword().length > 0 &&
+				   editUserPanel.txtConfirmPassword.getPassword().length > 0)
+				{
+					if(Arrays.equals(editUserPanel.txtPassword.getPassword(), 
+							editUserPanel.txtConfirmPassword.getPassword()) == true)
+					{
+					
+						String level;
+						
+						if(editUserPanel.cmbAccessLevel.toString().equals("Administrator"))
+						{
+							level = "2";
+						}
+						else {
+							level = "1";
+						}
+						
+						sql.updateUser(editUserPanel.txtAdminID.getText(),
+										editUserPanel.txtSapUserName.getText(),
+										editUserPanel.txtPassword.toString(),
+										editUserPanel.cmbDepartment.toString(),
+										level,
+										editUserPanel.txtJobTitle.getText(),
+										editUserPanel.txtEmail.getText());
+					}
+					else {
+						 JOptionPane.showMessageDialog(frame,
+								 "Passwords do not match",
+								 "Passwords do not match! Please try again.",
+								 JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+				else {
+					 JOptionPane.showMessageDialog(frame,
+							 "Missing Information!",
+							 "Please fill in all information!",
+							 JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+			}
+			
+			if(e.getSource() == editUserPanel.editUserBackButton)
+			{
+				refreshUserTable();
+				cd.show(cards,"errorPanel");
+			}			
+			
+			
+
+/*
+ * ================================= End Edit Error ==================================================================
+ */				
+			
+			
+			
+			
+			
 		
 /*
  * ================================= Frame Menu =====================================================================
@@ -200,13 +305,13 @@ public class EventHandler implements ActionListener
 			if(e.getSource() == frame.logoutItem)
 			 {
 				// confirm logout
-				int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+				int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
 				
 				// if yes
 				if (confirm == JOptionPane.YES_OPTION)
 				{
 				
-					 JOptionPane.showMessageDialog(null,
+					 JOptionPane.showMessageDialog(frame,
 							 "Logged Out!",
 							 "Logged Out!",
 							 JOptionPane.INFORMATION_MESSAGE);
@@ -247,6 +352,16 @@ public class EventHandler implements ActionListener
 			// get next ENFID
 			newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
 			addErrorPanel.txtEnfID.setText(Integer.toString(sql.getNumberOfErrors()+1));
+			
+			// Departments
+			addErrorPanel.cmbDepartment.removeAllItems();
+			String[] deptArray = new String[sql.getDepartments().size()];
+			sql.getDepartments().toArray(deptArray);
+			
+				for (String string : deptArray) 
+				{
+						addErrorPanel.cmbDepartment.addItem(string);
+				}
 
 		}// end frame.addItem
 		
@@ -255,27 +370,52 @@ public class EventHandler implements ActionListener
 		{
 			try {
 				
-				Document doc = new Document();
-				PdfWriter.getInstance(doc, new FileOutputStream("C:\\temp\\Report.pdf"));
-				doc.open();
-				doc.add(new Paragraph("ENF",FontFactory.getFont(FontFactory.TIMES_BOLD, 18)));
-				doc.add(new Paragraph(new Date().toString()));
+				String enfID = JOptionPane.showInputDialog("Enter ENF ID Number to view report:");
+				TempData data = new TempData();
+				newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+				sql.getErrorDataForView(enfID, data);
 				
-				PdfPTable table = new PdfPTable(1);
-				table.addCell("1");
-
-				doc.add(table);
-				
-				doc.close();
-				
-				// open file using default file
-				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+"C:\\temp\\Report.pdf");
+				if (enfID.length() > 0)
+				{
+					//get the path of the program
+					String directory = System.getProperty("user.dir");
+					
+					
+					//set the path of the database to the current path of the program
+					//String template = directory + File.separator + "rpt_Error_Notification_template.pdf";
+					URL template = getClass().getResource("PDF/enf_template.pdf");
+					String completeENF = directory + File.separator + "ENF.pdf";
+					
+					
+					//final String template = "X:\\temp\\rpt_Error_Notification_template.pdf";
+				    //final String completeENF = "X:\\temp\\ReportView.pdf";
+				    
+				    
+				    
+				    /*
+					Document doc = new Document();
+					PdfWriter.getInstance(doc, new FileOutputStream("C:\\temp\\Report.pdf"));
+					doc.open();
+					doc.add(new Paragraph("ENF",FontFactory.getFont(FontFactory.TIMES_BOLD, 18)));
+					doc.add(new Paragraph(new Date().toString()));
+					
+					PdfPTable table = new PdfPTable(1);
+					table.addCell("1");
+	
+					doc.add(table);
+					
+					doc.close();
+					*/
+					
+				    PDFHandler enfPDF = new PDFHandler(0);
+				    // fill in information
+				    enfPDF.enfPdf(template.toString(), completeENF, data);
+					
+					// open file using default file
+					Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+ completeENF);
+				}
 			
-			
-			} catch (FileNotFoundException | DocumentException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1) {
+			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -347,16 +487,130 @@ public class EventHandler implements ActionListener
 			
 			JOptionPane.showInputDialog("Enter ENF ID Number to print:");
 
-			 JOptionPane.showMessageDialog(null,
+			 JOptionPane.showMessageDialog(frame,
 					 "Functionality Disabled.",
 					 "Functionality Currently Disabled.",
 					 JOptionPane.ERROR_MESSAGE);
 			
 		}// end errorPanel.printButton
+		
 
 /*
  * ================================= End Error Panel =====================================================================
  */	
+		
+
+		
+/*
+ * ================================= Add Error Panel =====================================================================
+ */			
+		
+		if(e.getSource() == addErrorPanel.saveButton)
+		{
+			newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+			
+			if(addErrorPanel.txtEnfID.getText().length() > 0 &&
+			   addErrorPanel.txtSapUserName.getText().length() > 0 &&
+			   addErrorPanel.cmbDepartment.toString().length() > 0 &&
+			   addErrorPanel.cmbShift.toString().length() > 0 &&
+			   addErrorPanel.model.toString().length() > 0 &&
+			   addErrorPanel.txtProcess.getText().length() > 0 && 
+			   addErrorPanel.txtSkuNumber.getText().length() > 0 &&
+			   addErrorPanel.txtLocationAffected.getText().length() > 0 &&
+			   addErrorPanel.txtQty.getText().length() > 0 &&
+			   addErrorPanel.errorDateModel.toString().length() > 0 &&
+			   addErrorPanel.cmbStatus.toString().length() > 0 &&
+			   addErrorPanel.txtNotes.getText().length() > 0 &&
+			   addErrorPanel.txtOpenedBy.getText().length() > 0)
+			{
+				sql.createError(addErrorPanel.txtEnfID.getText(),
+						addErrorPanel.txtSapUserName.getText(),
+						addErrorPanel.cmbDepartment.toString(),
+						addErrorPanel.cmbShift.toString(),
+						addErrorPanel.model.toString(),
+						addErrorPanel.txtProcess.getText(),
+						addErrorPanel.txtSkuNumber.getText(),
+						addErrorPanel.txtLocationAffected.getText(),
+						addErrorPanel.txtQty.getText(),
+						addErrorPanel.errorDateModel.toString(),
+						addErrorPanel.cmbStatus.toString(),
+						(LocalDate.now().plusDays(7)).toString(),
+						addErrorPanel.txtNotes.getText(),
+						//attachment,
+						addErrorPanel.txtOpenedBy.getText());
+			}
+			else {
+				 JOptionPane.showMessageDialog(frame,
+						 "Missing Information!",
+						 "Please fill in all information!",
+						 JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		}
+		
+		if(e.getSource() == addErrorPanel.backButton)
+		{
+			refreshErrorTable();
+			cd.show(cards,"errorPanel");
+		}
+		
+/*
+ * ================================= End Add Error Panel =====================================================================
+ */	
+		
+		
+		
+		
+		
+/*
+ * ================================= Add User Panel =====================================================================
+ */	
+		if(e.getSource() == addUserPanel.addUserSaveButton)
+		{
+			newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+			
+			if(addUserPanel.txtSapUserName.getText().length() > 0 &&
+			   addUserPanel.txtAdminID.getText().length() > 0 &&
+			   addUserPanel.txtJobTitle.getText().length() > 0 && 
+			   addUserPanel.txtEmail.getText().length() > 0 &&
+			   addUserPanel.cmbAccessLevel.toString().length() > 0 &&
+			   addUserPanel.cmbDepartment.toString().length() > 0 &&
+			   addUserPanel.txtPassword.getPassword().length > 0 &&
+			   addUserPanel.txtConfirmPassword.getPassword().length > 0)
+			{
+				
+				String level;
+				
+				if(addUserPanel.cmbAccessLevel.toString().equals("Administrator"))
+				{
+					level = "2";
+				}
+				else {
+					level = "1";
+				}
+				
+				String myPass=String.valueOf(addUserPanel.txtPassword);
+				
+				sql.createUser(addUserPanel.txtAdminID.getText(),
+								addUserPanel.txtSapUserName.getText(),
+								myPass,
+								(String)addUserPanel.cmbDepartment.getSelectedItem(),
+								level,
+								addUserPanel.txtJobTitle.getText(),
+								addUserPanel.txtEmail.getText());
+			}
+			else {
+				 JOptionPane.showMessageDialog(frame,
+						 "Missing Information!",
+						 "Please fill in all information!",
+						 JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		}
+		
+/*
+ * ================================= End Add User Panel =====================================================================
+ */		
 		
 		
 		
@@ -372,6 +626,16 @@ public class EventHandler implements ActionListener
 			newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
 			sql.getErrorData(enfID, editErrorPanel);
 			cd.show(cards, "editErrorPanel");
+			
+			// Departments
+			editErrorPanel.cmbDepartment.removeAllItems();
+			String[] deptArray = new String[sql.getDepartments().size()];
+			sql.getDepartments().toArray(deptArray);
+			
+				for (String string : deptArray) 
+				{
+						editErrorPanel.cmbDepartment.addItem(string);
+				}
 			
 		}// end frame.adminEditItem || frame.devEditItem
 		
@@ -391,7 +655,19 @@ public class EventHandler implements ActionListener
 		{
 			
 			String userID = JOptionPane.showInputDialog("Enter User ID Number to edit:");
-
+			newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+			sql.getUserData(userID, editUserPanel);
+			cd.show(cards, "editErrorPanel");
+			
+			// Departments
+			editErrorPanel.cmbDepartment.removeAllItems();
+			String[] deptArray = new String[sql.getDepartments().size()];
+			sql.getDepartments().toArray(deptArray);
+			
+				for (String string : deptArray) 
+				{
+						editUserPanel.cmbDepartment.addItem(string);
+				}
 			cd.show(cards, "editUserPanel");
 		}
 		
@@ -400,14 +676,14 @@ public class EventHandler implements ActionListener
 			String enfFID = JOptionPane.showInputDialog("Enter ENF ID Number to delete:");
 
 			// confirm delete
-			int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this error?", "Delete Error", JOptionPane.YES_NO_OPTION);
+			int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete this error?", "Delete Error", JOptionPane.YES_NO_OPTION);
 			
 			// if yes
 			if (confirm == JOptionPane.YES_OPTION)
 			{
 				newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
 				sql.deleteError(enfFID);
-				JOptionPane.showMessageDialog(null,
+				JOptionPane.showMessageDialog(frame,
 						 "Error Deleted!",
 						 "Deleted!",
 						 JOptionPane.INFORMATION_MESSAGE);
@@ -418,7 +694,7 @@ public class EventHandler implements ActionListener
 					errorPanel.model.getErrors(errorPanel.model, errorPanel.outputTable);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
 				} 
 				 
 			}
@@ -448,6 +724,44 @@ public class EventHandler implements ActionListener
 		if(e.getSource() == frame.devSQLItem)
 		{
 			ConsoleFrame console = new ConsoleFrame();
+			console.runButton.addActionListener(new ActionListener() 
+			{
+		         public void actionPerformed(ActionEvent e) 
+		         {
+			
+					if (e.getSource() == console.runButton)
+					{
+					         	  
+				         	  try {
+									
+						    	  //instantiate new table model
+						  		console.model = new NewDefaultTableModel(console.databasePath); 
+						            
+						             //instantiate JTable with tableModel
+						          	  console.outputTable = new JTable(console.model);
+						          	  
+						        	  //set up table with borders and headers
+						        	  console.outputTable.setBorder(BorderFactory.createLineBorder(Color.black));
+						        	  
+						           	  //add the table to a scroll pane
+						         	  console.scrolls = new JScrollPane(console.outputTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+						         	  
+						         	  //set scrollPane color
+						         	  console.scrolls.getViewport().setBackground(Color.lightGray);
+						           
+						         	  //add scrollPane to JPanel
+						         	  console.add("Center", console.scrolls);
+				         		  
+				         		  
+				    			console.model.sqlConsoleQuery(console.model, console.outputTable, console.inputArea.getText());
+				    		} catch (Exception e4) {
+				    			// TODO Auto-generated catch block
+				    			e4.printStackTrace();
+				    		}
+					}
+			
+		         }
+		    });
 		}
 /*
  * ================================= End Developer & Admin Menu =============================================================
@@ -500,7 +814,7 @@ public class EventHandler implements ActionListener
 						 frame.repaint();
 						 login.dispose();
 						 
-						 JOptionPane.showMessageDialog(null,
+						 JOptionPane.showMessageDialog(login,
 								 "Logged In!",
 								 "Logged In!",
 								 JOptionPane.INFORMATION_MESSAGE);
@@ -508,7 +822,7 @@ public class EventHandler implements ActionListener
 					}
 					else
 					{
-						 JOptionPane.showMessageDialog(null,
+						 JOptionPane.showMessageDialog(login,
 								 "Wrong User Name/Password!",
 								 "Wrong Credentials",
 								 JOptionPane.ERROR_MESSAGE);
@@ -557,18 +871,20 @@ public class EventHandler implements ActionListener
 					if (password.length() > 0)
 					{
 						// currentpassword is right
-						if (changePassword.currentPassword.getText().equals(password))
+						String pw = new String(changePassword.currentPassword.getPassword());
+						if (pw.equals(password))
 						{
 							//update to new password
-							if(changePassword.confirmNewPassword.getText().equals(changePassword.newPassword.getText()))
+							if(Arrays.equals(changePassword.confirmNewPassword.getPassword(), 
+									changePassword.newPassword.getPassword()))
 							{
-								System.out.println(changePassword.newPassword.getText());
-								System.out.println(loggedIn);
-								sql.changePassword(loggedIn, changePassword.newPassword.getText());
+								String newPw = new String(changePassword.newPassword.getPassword());
+								System.out.println(newPw);					
+								sql.changePassword(loggedIn, newPw);
 							}
 							else
 							{
-								 JOptionPane.showMessageDialog(null,
+								 JOptionPane.showMessageDialog(frame,
 										 "New password does not match, Please try again!",
 										 "New Password Mismatch",
 										 JOptionPane.ERROR_MESSAGE);
@@ -578,7 +894,7 @@ public class EventHandler implements ActionListener
 						// currentpassword is wrong
 						else
 						{
-							 JOptionPane.showMessageDialog(null,
+							 JOptionPane.showMessageDialog(frame,
 									 "Current Password is Incorrect, Please try again!",
 									 "Wrong Password",
 									 JOptionPane.ERROR_MESSAGE);
@@ -587,7 +903,7 @@ public class EventHandler implements ActionListener
 					
 					else 
 					{
-						 JOptionPane.showMessageDialog(null,
+						 JOptionPane.showMessageDialog(frame,
 								 "Something went wrong when looking for the current password!",
 								 "Error",
 								 JOptionPane.ERROR_MESSAGE);
@@ -595,7 +911,7 @@ public class EventHandler implements ActionListener
 					
 			}//
 		} catch(Exception e2) {
-			
+
 		}// end try catch for changePW
 /*
  * ================================= End Change Password ======================================================================
@@ -616,7 +932,7 @@ public class EventHandler implements ActionListener
 		if(e.getSource() == settingsPanel.chooseDatabaseFile)
 		{
 	        JFileChooser databaseFileChooser = new JFileChooser();
-	        int returnValue = databaseFileChooser.showOpenDialog(null);
+	        int returnValue = databaseFileChooser.showOpenDialog(frame);
 	        
 	        if (returnValue == JFileChooser.APPROVE_OPTION) 
 	        {
@@ -628,7 +944,7 @@ public class EventHandler implements ActionListener
 		if(e.getSource() == settingsPanel.chooseXmlFile)
 		{
 	        JFileChooser databaseFileChooser = new JFileChooser();
-	        int returnValue = databaseFileChooser.showOpenDialog(null);
+	        int returnValue = databaseFileChooser.showOpenDialog(frame);
 	        
 	        if (returnValue == JFileChooser.APPROVE_OPTION) 
 	        {
@@ -652,7 +968,7 @@ public class EventHandler implements ActionListener
 			errorPanel.model.getErrors(errorPanel.model, errorPanel.outputTable);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(frame, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
 		} 
 	}
 
@@ -666,7 +982,7 @@ public class EventHandler implements ActionListener
 			errorPanel.model.getErrors(errorPanel.model, errorPanel.outputTable);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(frame, "Error refreshing data.", "An error has occurred,", JOptionPane.WARNING_MESSAGE);
 		} 
 	}
 
