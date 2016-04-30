@@ -241,13 +241,17 @@ public class EventHandler implements ActionListener
 				   editUserPanel.txtPassword.getPassword().length > 0 &&
 				   editUserPanel.txtConfirmPassword.getPassword().length > 0)
 				{
-					if(Arrays.equals(editUserPanel.txtPassword.getPassword(), 
-							editUserPanel.txtConfirmPassword.getPassword()) == true)
+									
+							
+					String pw = new String(editUserPanel.txtPassword.getPassword());
+					String confirmPw = new String(editUserPanel.txtConfirmPassword.getPassword());
+					
+					if(pw.equals(confirmPw) && pw.length() > 0)
 					{
 					
 						String level;
 						
-						if(editUserPanel.cmbAccessLevel.toString().equals("Administrator"))
+						if(editUserPanel.cmbAccessLevel.getSelectedItem().toString().equals("Administrator"))
 						{
 							level = "2";
 						}
@@ -257,11 +261,16 @@ public class EventHandler implements ActionListener
 						
 						sql.updateUser(editUserPanel.txtAdminID.getText(),
 										editUserPanel.txtSapUserName.getText(),
-										editUserPanel.txtPassword.toString(),
-										editUserPanel.cmbDepartment.toString(),
+										pw,
+										editUserPanel.cmbDepartment.getSelectedItem().toString(),
 										level,
 										editUserPanel.txtJobTitle.getText(),
 										editUserPanel.txtEmail.getText());
+						
+						 JOptionPane.showMessageDialog(frame,
+								 "Saved!",
+								 "Saved!",
+								 JOptionPane.INFORMATION_MESSAGE);
 					}
 					else {
 						 JOptionPane.showMessageDialog(frame,
@@ -269,6 +278,8 @@ public class EventHandler implements ActionListener
 								 "Passwords do not match! Please try again.",
 								 JOptionPane.INFORMATION_MESSAGE);
 					}
+					
+					
 				}
 				else {
 					 JOptionPane.showMessageDialog(frame,
@@ -276,6 +287,8 @@ public class EventHandler implements ActionListener
 							 "Please fill in all information!",
 							 JOptionPane.INFORMATION_MESSAGE);
 				}
+				
+				
 				
 			}
 			
@@ -326,6 +339,8 @@ public class EventHandler implements ActionListener
 					 frame.validate();
 					 frame.repaint();
 					 login.dispose();
+					 
+					 cd.show(cards, "errorPanel");
 				}
 				else {
 					// stay logged in

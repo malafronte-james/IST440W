@@ -605,12 +605,12 @@ public class newSQLiteConnector {
 			connect();
 			
 			String query = "UPDATE User SET "
-					+ "User_Name='?',"
-					+ "Password='?',"
-					+ "Department='?',"
+					+ "User_Name=?,"
+					+ "Password=?,"
+					+ "Department=?,"
 					+ "Access_Level_ID=?,"
-					+ "Job_Title='?',"
-					+ "Email='?'"
+					+ "Job_Title=?,"
+					+ "Email=?"
 					+ "WHERE User_ID=?;";
 			PreparedStatement pst = connection.prepareStatement(query);
 			pst.setString(1, username);
