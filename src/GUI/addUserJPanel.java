@@ -1,11 +1,18 @@
 package GUI;
 
+/**
+ * @author jmalafronte
+ * Creates the add User JPanel components
+ * Version 1.0.0
+ * 
+ * addUserJPanel.java
+ * 
+ */
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.*;
-
 import net.miginfocom.swing.MigLayout;
 
 public class addUserJPanel extends JPanel

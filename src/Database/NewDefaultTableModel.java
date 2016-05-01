@@ -1,12 +1,18 @@
 package Database;
 
+/**
+ * @author jmalafronte
+ * Connects to the datbase and creates the tables for the gui
+ * Version 1.0.0
+ * 
+ * NewDefaultTableModel.java
+ * 
+ */
+
 import java.io.*;
 import java.sql.*;
-import java.util.Properties;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import GUI.settingsJPanel;
 
 public class NewDefaultTableModel extends DefaultTableModel
 {

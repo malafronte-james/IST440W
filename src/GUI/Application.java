@@ -1,7 +1,7 @@
 package GUI;
 
 /**
- * James Malafronte
+ * @author jmalafronte
  * Create JFrame and run the application through main
  * Version 1.0.0
  * 
@@ -9,7 +9,6 @@ package GUI;
  * 
  */
 
-import java.awt.*;
 import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;

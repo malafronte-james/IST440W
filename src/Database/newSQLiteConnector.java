@@ -1,10 +1,18 @@
 package Database;
 
+/**
+ * @author jmalafronte
+ * Handles the different actions required by the database
+ * Version 1.0.0
+ * 
+ * newSQLiteConnector.java
+ * 
+ */
+
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
-
 import GUI.*;
 import Utilities.TempData;
 
@@ -50,7 +58,7 @@ public class newSQLiteConnector {
 	 */
 	public void changePassword(String username, String password)
 	{
-		
+		username = username.toLowerCase();
 		try {
 			
 			connect();
@@ -88,6 +96,7 @@ public class newSQLiteConnector {
 	public int login(String username, String password)
 	{
 		int count = 0;
+		username = username.toLowerCase();
 		
 		try {
 			
@@ -135,6 +144,7 @@ public class newSQLiteConnector {
 	public int getUserLevel(String username)
 	{
 		int userLevel = 0;
+		username = username.toLowerCase();
 		
 		try {
 			
@@ -178,6 +188,8 @@ public class newSQLiteConnector {
 	{
 
 		String password = null;
+		username = username.toLowerCase();
+		
 		try 
 		{
 			
@@ -312,7 +324,6 @@ public class newSQLiteConnector {
 	{
 		
 		try {
-			
 			int enfID = Integer.parseInt(ENF_ID);
 			int qty = Integer.parseInt(quantity);
 			
@@ -375,6 +386,10 @@ public class newSQLiteConnector {
 			
 			pst.executeUpdate();
 
+			 JOptionPane.showMessageDialog(null,
+					 "Error Created",
+					 "Error Created Successfully.",
+					 JOptionPane.PLAIN_MESSAGE);
 			
 		} catch (SQLException e) {
 			 JOptionPane.showMessageDialog(null,
@@ -434,7 +449,7 @@ public class newSQLiteConnector {
 			String quantity,
 			String date_Of_Error,
 			String status,
-			//String due_date,
+			String due_date,
 			String notes,
 			//String attachment,
 			String openedBy)
@@ -449,20 +464,20 @@ public class newSQLiteConnector {
 			String query = "UPDATE Errors SET "
 					//+ "Associate_First_Name = '?'," //Associate_First_Name
 					//+ "Associate_Last_Name = '?'," // Associate_Last_Name
-					+ "SAP_Username = '?'," // SAP_Username
-					+ "Department = '?'," // department
-					+ "Shift = '?'," // shift
-					+ "Opened_Date = '?'," // opened_date
-					+ "Location_Being_Audited = '?'," // location_Being_Audited
-					+ "Article_Number = '?'," // article_Number
-					+ "Location_Affected = '?'," // location_Affected
+					+ "SAP_Username = ?," // SAP_Username
+					+ "Department = ?," // department
+					+ "Shift = ?," // shift
+					+ "Opened_Date = ?," // opened_date
+					+ "Location_Being_Audited = ?," // location_Being_Audited
+					+ "Article_Number = ?," // article_Number
+					+ "Location_Affected = ?," // location_Affected
 					+ "Quantity = ?," // quantity
-					+ "Date_of_Error = '?'," // date_Of_Error
-					+ "Status = '?'," // status
-					//+ "Due_Date = '?'," // due_date
-					+ "Notes = '?'," // notes
+					+ "Date_of_Error = ?," // date_Of_Error
+					+ "Status = ?," // status
+					+ "Due_Date = '?'," // due_date
+					+ "Notes = ?," // notes
 					//+ "Attachment = '?'," // attachment
-					+ "Opened_By) = '?'," // openedBy
+					+ "Opened_By) = ?," // openedBy
 				    + "WHERE ENF_ID = ?;"; // ENF_ID
 			PreparedStatement pst = connection.prepareStatement(query);
 			//pst.setString(1, Associate_First_Name);
@@ -477,7 +492,7 @@ public class newSQLiteConnector {
 			pst.setInt(8, qty);
 			pst.setString(9, date_Of_Error);
 			pst.setString(10, status);
-			//pst.setString(11, due_date);
+			pst.setString(11, due_date);
 			pst.setString(11, notes);
 			//pst.setString(13, attachment);
 			pst.setString(12, openedBy);
@@ -486,6 +501,10 @@ public class newSQLiteConnector {
 			
 			int rs = pst.executeUpdate();
 			
+			 JOptionPane.showMessageDialog(null,
+					 "Error Updated",
+					 "Error Updated Successfully.",
+					 JOptionPane.PLAIN_MESSAGE);
 			
 		} catch (SQLException e) {
 			 JOptionPane.showMessageDialog(null,
@@ -513,6 +532,7 @@ public class newSQLiteConnector {
 			   			   String email)
 	{
 		
+		username = username.toLowerCase();
 
 			try {
 				int intUserID = Integer.parseInt(userID);
@@ -541,6 +561,11 @@ public class newSQLiteConnector {
 				pst.setString(7, email);
 			
 			pst.executeUpdate();
+			
+			 JOptionPane.showMessageDialog(null,
+					 "User Created",
+					 "User Created Successfully.",
+					 JOptionPane.PLAIN_MESSAGE);
 			
 			
 		} catch (SQLException e) {
@@ -597,6 +622,7 @@ public class newSQLiteConnector {
 						   String jobTitle,
 						   String email)
 	{
+		username = username.toLowerCase();
 		int intUserID = Integer.parseInt(userID);
 		int intAccessLevel = Integer.parseInt(accessLevel);
 		
@@ -623,7 +649,11 @@ public class newSQLiteConnector {
 			
 			int rs = pst.executeUpdate();
 
-			
+			 JOptionPane.showMessageDialog(null,
+					 "User Updated",
+					 "User Updated Successfully.",
+					 JOptionPane.PLAIN_MESSAGE);
+			 
 		} catch (SQLException e) {
 
 			 JOptionPane.showMessageDialog(null,
@@ -750,15 +780,15 @@ public class newSQLiteConnector {
 				 //p.settxrs.getString("Associate_First_Name");
 				 //last_Name = rs.getString("Associate_Last_Name");
 				 p.setTxtSapUserName(rs.getString("SAP_Username"));
-				 //rs.getString("Department");
-				 //shift = rs.getString("Shift");
-				 //openedDate = rs.getString("Opened_Date");
-				 //Location_Being_Audited = rs.getString("Location_Being_Audited");
+				 p.setCmbDepartment(rs.getString("Department"));
+				 p.setCmbShift(rs.getString("Shift"));
+				 p.setTxtOpenedDate(new SimpleDateFormat("MM/dd/yyyy").parse(rs.getString("Opened_Date")));
 				 p.setTxtSkuNumber(rs.getString("Article_Number"));
 				 p.setTxtLocationAffected(rs.getString("Location_Affected"));
 				 p.setTxtQty(rs.getString("Quantity"));
-				 p.setTxtDateOfError(rs.getString("Date_of_Error"));
-				 //rs.getString("Status");
+				 p.setTxtDateOfError(new SimpleDateFormat("MM/dd/yyyy").parse(rs.getString("Date_of_Error")));
+				 p.setCmbStatus(rs.getString("Status"));
+				 p.setTxtProcess(rs.getString("Location_Being_Audited"));
 				 //rs.getString("Due_Date");
 				 p.txtNotes.setText(rs.getString("Notes"));
 				 //attachment = rs.getString("Attachment");
@@ -769,7 +799,7 @@ public class newSQLiteConnector {
 			}
 			
 		} catch (Exception e){
-
+				e.printStackTrace();
 		}finally {
             try {
             	connection.close();
@@ -812,6 +842,45 @@ public class newSQLiteConnector {
 			
 		} catch (Exception e){
 
+		}finally {
+            try {
+            	connection.close();
+            } catch (Exception e) {
+                System.err.println("Failed to close connection: " + e.toString());
+            }
+		}
+	}
+	
+	/**
+	 * Retrieve all overdue errors
+	 * @param date
+	 */
+	public void getOverdue(String date)
+	{
+		try 
+		{
+			
+			connect();
+			
+			String query = "SELECT * FROM Errors;";
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			
+			// cycle through results
+			while(rs.next())
+			{
+				//count = count + 1;
+				
+			}
+			
+		      
+		} catch (Exception changePW) {
+			 JOptionPane.showMessageDialog(null,
+					 "Currently Unavailable",
+					 "Connection Error",
+					 JOptionPane.ERROR_MESSAGE);
+			 
+			 changePW.printStackTrace();
 		}finally {
             try {
             	connection.close();

@@ -1,8 +1,16 @@
 package GUI;
 
+/**
+ * Login Menu GUI
+ * Version 1.0.0
+ * 
+ * @author jmalafronte
+ * ReportManager.java
+ * 
+ */
+
 import java.awt.*;
 import javax.swing.*;
-
 import net.miginfocom.swing.MigLayout;
 
 public class LoginMenu extends smallJFrame

@@ -1,10 +1,17 @@
 package GUI;
 
+/**
+ * User List Panel Components
+ * Version 1.0.0
+ * 
+ * @author jmalafronte
+ * userListJPanel.java
+ * 
+ */
+
 import java.awt.*;
-import java.io.*;
 import java.sql.SQLException;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import Database.*;
 
 public class userListJPanel extends JPanel

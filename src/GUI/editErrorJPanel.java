@@ -1,13 +1,20 @@
 package GUI;
 
+/**
+ * @author jmalafronte
+ * Creates the edit Error JPanel components
+ * Version 1.0.0
+ * 
+ * editErrorJPanel.java
+ * 
+ */
+
 import java.awt.*;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Properties;
-
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 import org.jdatepicker.impl.*;
-
 import net.miginfocom.swing.*;
 
 public class editErrorJPanel extends JPanel
@@ -16,6 +23,10 @@ public class editErrorJPanel extends JPanel
 	public JTextField txtSapUserName, txtEnfID, txtOpenedDate, txtProcess, txtLocationAffected, txtDateOfError, txtSkuNumber, txtQty, txtOpenedBy;
 	public JComboBox cmbDepartment, cmbShift, cmbStatus;
 	public JTextArea txtNotes;
+	public JDatePickerImpl openedDatePicker;
+	public JDatePickerImpl errorDatePicker;
+	public JDatePanelImpl openedDatePanel, errorDatePanel; 
+	public UtilDateModel errorDateModel, model;
 	
 	/**
 	 * @param txtSapUserName the txtSapUserName to set
@@ -51,6 +62,7 @@ public class editErrorJPanel extends JPanel
 	 */
 	public void setTxtDateOfError(String txtDateOfError) {
 		this.txtDateOfError.setText(txtDateOfError);
+		
 	}
 
 	/**
@@ -162,15 +174,21 @@ public class editErrorJPanel extends JPanel
     	cmbShift = new JComboBox(new String[] { "1", "2", "3", "W", "W3"});    	
     	centerPanel.add(cmbShift, "wrap");
     	
+    	// get local date
+    	LocalDate now = LocalDate.now();
+
+    	
     	// opened date
     	centerPanel.add(new JLabel("Opened Date"));
-    	UtilDateModel model = new UtilDateModel();
+    	model = new UtilDateModel();
     	Properties p = new Properties();
+    	//model.setDate(now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+    	openedDatePanel = new JDatePanelImpl(model, p);
+    	openedDatePicker = new JDatePickerImpl(openedDatePanel, new DateComponentFormatter());
+    	
     	p.put("text.today", "Today");
     	p.put("text.month", "Month");
     	p.put("text.year", "Year");
-    	JDatePanelImpl openedDatePanel = new JDatePanelImpl(model, p);
-    	JDatePickerImpl openedDatePicker = new JDatePickerImpl(openedDatePanel, new DateComponentFormatter());
     	centerPanel.add(openedDatePicker, "wrap, pushx");
     	
     	// opened by
@@ -183,13 +201,15 @@ public class editErrorJPanel extends JPanel
     	
     	// date of error
     	centerPanel.add(new JLabel("Date of Error"));
-    	UtilDateModel errorDateModel = new UtilDateModel();
+    	errorDateModel = new UtilDateModel();
     	Properties errorDpProperties = new Properties();
+    	errorDatePanel = new JDatePanelImpl(errorDateModel, errorDpProperties);
+    	errorDatePicker = new JDatePickerImpl(errorDatePanel, new DateComponentFormatter());
     	errorDpProperties.put("text.today", "Today");
     	errorDpProperties.put("text.month", "Month");
     	errorDpProperties.put("text.year", "Year");
-    	JDatePanelImpl errorDatePanel = new JDatePanelImpl(model, errorDpProperties);
-    	JDatePickerImpl errorDatePicker = new JDatePickerImpl(errorDatePanel, new DateComponentFormatter());
+    	
+    	errorDatePicker.setEnabled(false);
     	centerPanel.add(errorDatePicker, "wrap, pushx");
     	
     	// Status
@@ -243,6 +263,33 @@ public class editErrorJPanel extends JPanel
 		      	
 		return;
     }// end buildSouthPanel
+
+    /**
+     * Set the opened date
+     * @param parse the date to set
+     */
+	public void setTxtOpenedDate(Date parse) {
+		model.setValue(parse);
+		
+	}
+
+	/**
+	 * Set the date of the error
+	 * @param parse the date to set
+	 */
+	public void setTxtDateOfError(Date parse) {
+		errorDateModel.setValue(parse);
+		
+	}
+
+	/**
+	 * Sets txtProcess
+	 * @param string the txtProcess to set
+	 */
+	public void setTxtProcess(String string) {
+		this.txtProcess.setText(string);
+		
+	}
     
 
 }

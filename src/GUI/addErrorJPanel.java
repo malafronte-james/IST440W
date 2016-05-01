@@ -1,5 +1,14 @@
 package GUI;
 
+/**
+ * @author jmalafronte
+ * Creates the add Error JPanel components
+ * Version 1.0.0
+ * 
+ * addErrorJPanel.java
+ * 
+ */
+
 import java.awt.*;
 import java.time.LocalDate;
 import java.util.Properties;
@@ -100,7 +109,7 @@ public class addErrorJPanel extends JPanel
     	centerPanel.add(new JLabel("Opened Date"));
     	model = new UtilDateModel();
     	Properties p = new Properties();
-    	//model.setDate(now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+    	model.setDate(now.getYear(), now.getMonthValue(), now.getDayOfMonth());
     	openedDatePanel = new JDatePanelImpl(model, p);
     	openedDatePicker = new JDatePickerImpl(openedDatePanel, new DateComponentFormatter());
     	

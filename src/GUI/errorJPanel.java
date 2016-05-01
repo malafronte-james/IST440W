@@ -1,13 +1,18 @@
 package GUI;
 
-import java.awt.*;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.SQLException;
+/**
+ * @author jmalafronte
+ * Creates the Error JPanel components
+ * Version 1.0.0
+ * 
+ * errorJPanel.java
+ * 
+ */
 
+import java.awt.*;
+import java.sql.SQLException;
 import javax.swing.*;
 import Database.*;
-import Properties.settingsHandler;
 
 public class errorJPanel extends JPanel
 {

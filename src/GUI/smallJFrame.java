@@ -1,13 +1,16 @@
 package GUI;
 
-import javax.swing.*;
-import javax.swing.UIManager.LookAndFeelInfo;
-
 /**
+ * use this for all small jframes, such as login menus and report manager
+ * Version 1.0.0
  * 
  * @author jmalafronte
- * use this for all small jframes, such as login menus and report manager
+ * smallJFrame.java
+ * 
  */
+
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 public class smallJFrame extends JFrame 
 {

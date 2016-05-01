@@ -1,37 +1,68 @@
 package Properties;
 
+/**
+ * @author jmalafronte
+ * Handles the settings
+ * Version 1.0.0
+ * 
+ * settingsHandler.java
+ * 
+ */
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Properties;
-
 import javax.swing.JOptionPane;
 
 public class settingsHandler 
 {
 	String databasePath = null;
 	String pdfPath = "";
+	String pdfOutPath = "";
 	Properties settings;
 	FileInputStream in;
 	FileOutputStream out;
 	FileWriter out2;
 	String settingsFilename;
 	
+	/**
+	 * Load the settings handler
+	 */
 	public settingsHandler()
 	{
 		loadSettings();
 	}
 	
+	/**
+	 * 
+	 * @return the databasePath
+	 */
 	public String getDatabasePath()
 	{
 		return databasePath;
+	}
+	
+	/**
+	 * @return the pdfOutPath
+	 */
+	public String getPdfOutPath() {
+		return pdfOutPath;
+	}
+
+	/**
+	 * @param pdfOutPath the pdfOutPath to set
+	 */
+	public void setPdfOutPath(String pdfOutPath) {
+		this.pdfOutPath = pdfOutPath;
+	}
+
+	/**
+	 * @param pdfPath the pdfPath to set
+	 */
+	public void setPdfPath(String pdfPath) {
+		this.pdfPath = pdfPath;
 	}
 	
 	/**
@@ -39,7 +70,7 @@ public class settingsHandler
 	 * @param sDbPath
 	 * @param sPdfPath
 	 */
-	public void savePaths(String sDbPath, String sPdfPath)
+	public void savePaths(String sDbPath, String sPdfPath, String sPdfOutputPath)
 	{
 		try
 		{
@@ -60,12 +91,14 @@ public class settingsHandler
 				
 			// set properties
 			settings.setProperty("databasePath", sDbPath);
-			settings.setProperty("pdfPath", sPdfPath);
+			settings.setProperty("pdfTemplatePath", sPdfPath);
+			settings.setProperty("pdfOutputPath", sPdfOutputPath);
 			settings.store(out, "Properties");
 								
 			// save properties to variables
 			databasePath = sDbPath;
 			pdfPath = sPdfPath;
+			pdfOutPath = sPdfOutputPath;
 				
 			out.close();
 				
@@ -86,7 +119,7 @@ public class settingsHandler
 	
 	
 	/**
-	 * 
+	 * get the PDF Path
 	 * @return
 	 */
 	public String getPdfPath()
@@ -96,7 +129,7 @@ public class settingsHandler
 	
 	
 	/**
-	 * 
+	 * Load the settings
 	 */
 	public void loadSettings()
 	{
@@ -116,7 +149,8 @@ public class settingsHandler
 			
 			//assign all the properties to variables
 			databasePath = settings.getProperty("databasePath");
-			pdfPath = settings.getProperty("pdfPath");
+			pdfPath = settings.getProperty("pdfTemplatePath");
+			pdfOutPath = settings.getProperty("pdfOutputPath");
 			
 			//close the FileInputStream
 			in.close();
@@ -143,18 +177,25 @@ public class settingsHandler
 				//set the path of the database to the current path of the program
 				String paths = "C:"+ File.separator + "temp"+ File.separator + "UltaBeauty.sqlite";
 				
-				//set the path of the database to the current path of the program
-				String xmlpaths = "C:"+ File.separator + "temp"+ File.separator + "xml";
+				File db = new File(paths);
 				
-				settings.setProperty("databasePath", paths);
-				settings.setProperty("xmlPath", xmlpaths);
-				settings.store(out, "Properties");
+				//set the path of the database to the current path of the program
+				String pdfPath = "C:"+ File.separator + "temp"+ File.separator + "pdf" + File.separator;
 							
+				// set properties
+				settings.setProperty("databasePath", paths);
+				settings.setProperty("pdfTemplatePath", pdfPath);
+				settings.setProperty("pdfOutputPath", pdfPath);
+				settings.store(out, "Properties");
+																
 				databasePath = paths;
 
 				out.close();
 				
-				JavaDownloadFile down = new JavaDownloadFile("C:\\temp");
+		    	if (!db.exists()) {
+		    		String download = "C:"+ File.separator + "temp"+ File.separator;
+		    		JavaDownloadFile down = new JavaDownloadFile(download);
+		    	}
 
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(null,
@@ -166,12 +207,6 @@ public class settingsHandler
 			}
 			
 			
-			/*JOptionPane.showMessageDialog(null,
-					"Error loading " + settingsFilename + "\n\nCreated File in current directory.\n\nEnsure the database file is in the current directory.",
-					"Error - File Not Found!",
-					JOptionPane.ERROR_MESSAGE);
-			*/
-			
 			JOptionPane.showMessageDialog(null,
 					"Error loading " + settingsFilename + "\n\nCreated File in current directory.",
 					"Error - File Not Found!",
@@ -179,64 +214,6 @@ public class settingsHandler
 		}
 		
 	}
-	
-	
-	/**
-	 * 
-	 */
-	public void writeSettings()
-	{
 		
-		//create new settings.properties file
-		File file = new File("settings.properties");
-		
-		//get the path of the file
-		String currentDirectory = file.getAbsolutePath();
-		
-		try {
-						
-			out = new FileOutputStream(currentDirectory);
-			
-			//get the path of the program
-			String directory = System.getProperty("user.dir");
-			
-			
-			//set the path of the database to the current path of the program
-			String paths = directory + File.separator + "UltaBeauty.sqlite";
-			
-			settings.setProperty("databasePath", paths);
-			settings.store(out, "Properties");
-			
-			
-			databasePath = paths;
-			
-			//convert it to bytes
-			//byte data[] = paths.getBytes();
-			
-			//write the bytes to the file
-			//out.write(data);
-			
-			out.close();
-			
-			JavaDownloadFile down = new JavaDownloadFile("C:\\temp");
-
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(null,
-					"Error saving new file, please move application to a writable location.",
-					"Error saving new File",
-					JOptionPane.ERROR_MESSAGE);
-			
-			System.exit(0);
-		}
-		
-		
-		/*JOptionPane.showMessageDialog(null,
-				"Error loading " + settingsFilename + "\n\nCreated File in current directory.\n\nEnsure the database file is in the current directory.",
-				"Error - File Not Found!",
-				JOptionPane.ERROR_MESSAGE);
-		*/
-
-	}
-	
 	
 }

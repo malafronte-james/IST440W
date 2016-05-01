@@ -1,4 +1,19 @@
 package Properties;
+
+//https://github.com/itcuties/Java-Download-File
+/**
+ * Downloads database from website
+ * Version 1.0.0
+ * 
+ * @author jmalafronte
+ * 
+ * retrieved from:
+ * https://github.com/itcuties/Java-Download-File
+ * 
+ * JavaDownloadFile.java
+ * 
+ */
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

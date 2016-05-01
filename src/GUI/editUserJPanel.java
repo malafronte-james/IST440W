@@ -1,11 +1,18 @@
 package GUI;
 
+/**
+ * @author jmalafronte
+ * Creates the edit User JPanel components
+ * Version 1.0.0
+ * 
+ * editUserJPanel.java
+ * 
+ */
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.*;
-
 import net.miginfocom.swing.MigLayout;
 
 public class editUserJPanel extends JPanel
@@ -134,14 +141,5 @@ public class editUserJPanel extends JPanel
 		      	
 		return;
     }// end buildSouthPanel
-    
-    /**
-     * Fill in information for edits
-     * @param userID
-     */
-    public void getInfo(String userID)
-    {
-    	
-    }
 	
 }

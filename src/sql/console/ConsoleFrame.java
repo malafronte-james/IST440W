@@ -1,15 +1,20 @@
 package sql.console;
 
+/**
+ * @author jmalafronte
+ * Creates the console gui
+ * Version 1.0.0
+ * 
+ * ConsoleFrame.java
+ * 
+ */
+
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
 import java.sql.SQLException;
-
 import javax.swing.*;
 import Database.NewDefaultTableModel;
 import GUI.*;
-import net.miginfocom.swing.MigLayout;
 
 public class ConsoleFrame extends smallJFrame{
 

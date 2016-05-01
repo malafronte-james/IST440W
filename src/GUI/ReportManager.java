@@ -1,15 +1,18 @@
 package GUI;
 
+/**
+ * Report Manager GUI
+ * Version 1.0.0
+ * 
+ * @author jmalafronte
+ * ReportManager.java
+ * 
+ */
+
 import java.awt.*;
 import java.util.Properties;
-
 import javax.swing.*;
-
-import org.jdatepicker.impl.DateComponentFormatter;
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
-
+import org.jdatepicker.impl.*;
 import net.miginfocom.swing.MigLayout;
 
 public class ReportManager extends smallJFrame
@@ -29,6 +32,9 @@ public class ReportManager extends smallJFrame
 	
 	}
 	
+	/**
+	 * Create the north panel components
+	 */
 	private void buildNorthPanel()
 	{
 		//date
@@ -37,6 +43,9 @@ public class ReportManager extends smallJFrame
 		//SAP USERNAME
 	}
 	
+	/**
+	 * Create the center panel components
+	 */
 	private void buildCenterPanel()
 	{
 		JPanel centerPanel = new JPanel();
@@ -59,7 +68,7 @@ public class ReportManager extends smallJFrame
 		centerPanel.add(fromDatePicker);
 		
 		centerPanel.add(new JLabel("Select Report:"), "gapleft 20" );
-		cmbReportSelector = new JComboBox(new String[] {"Overdue", "User Count", "Total Errors"});
+		cmbReportSelector = new JComboBox(new String[] {"Overdue"});
 		centerPanel.add(cmbReportSelector, "wrap, pushx, growx");
 		
 		centerPanel.add(new JLabel("To:"), "gapleft 10");
@@ -80,6 +89,9 @@ public class ReportManager extends smallJFrame
 		add(centerPanel, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * Create the south panel components
+	 */
 	private void buildSouthPanel()
 	{
 

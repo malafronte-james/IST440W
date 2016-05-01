@@ -1,17 +1,23 @@
 package GUI;
 
-import java.awt.*;
-import java.io.*;
-import java.util.Properties;
-import javax.swing.*;
+/**
+ * Settings Panel Components
+ * Version 1.0.0
+ * 
+ * @author jmalafronte
+ * settingsJPanel.java
+ * 
+ */
 
+import java.awt.*;
+import javax.swing.*;
 import Properties.settingsHandler;
 import net.miginfocom.swing.MigLayout;
 
 public class settingsJPanel extends JPanel
 {
-	JButton settingsSaveButton, chooseDatabaseFile, chooseXmlFile;
-	JTextField txtDatabasePath, txtPdfPath;
+	JButton settingsSaveButton, chooseDatabaseFile, choosePDFTemplateLocation, choosePDFOutputLocation;
+	JTextField txtDatabasePath, txtPdfPath, txtPdfOutputPath;
 	settingsHandler settings;
 
 	
@@ -82,14 +88,23 @@ public class settingsJPanel extends JPanel
     	centerPanel.add(chooseDatabaseFile, "wrap");
     	
     	
-    	// XML Path
-    	centerPanel.add(new JLabel("XML Path"));
+    	// PDF Template Path
+    	centerPanel.add(new JLabel("PDF Template Path"));
     	txtPdfPath = new JTextField(10);
     	txtPdfPath.setText(settings.getPdfPath());
     	centerPanel.add(txtPdfPath, "pushx, growx");
     	
-    	chooseXmlFile = new JButton("Choose");
-    	centerPanel.add(chooseXmlFile, "wrap");
+    	choosePDFTemplateLocation = new JButton("Choose");
+    	centerPanel.add(choosePDFTemplateLocation, "wrap");
+    	
+    	// PDF Output Path
+    	centerPanel.add(new JLabel("PDF Output Path"));
+    	txtPdfOutputPath = new JTextField(10);
+    	txtPdfOutputPath.setText(settings.getPdfOutPath());
+    	centerPanel.add(txtPdfOutputPath, "pushx, growx");
+    	
+    	choosePDFOutputLocation = new JButton("Choose");
+    	centerPanel.add(choosePDFOutputLocation, "wrap");
     	
     	// add centerPanel to the contentPane
     	add(centerScroll, BorderLayout.CENTER);

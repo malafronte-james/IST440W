@@ -1,5 +1,14 @@
 package Utilities;
 
+/**
+ * @author jmalafronte
+ * A Temporary holding class
+ * Version 1.0.0
+ * 
+ * TempData.java
+ * 
+ */
+
 public class TempData {
 	
 	String enfID,

@@ -1,20 +1,19 @@
 package GUI;
 
-import java.awt.*;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.UIManager.LookAndFeelInfo;
-
 /**
- * 
- * @author jmalafronte
- * used for all of our jframes that are of normal size
+ * used for all of our jframes that are of normal size </br>
  * implement jmenubar into this
  * 
+ * Version 1.0.0
+ * 
+ * @author jmalafronte
+ * mainJFrame.java
+ * 
  */
+
+import java.awt.*;
+import javax.swing.*;
+
 public class mainJFrame extends JFrame {
 
     final private Color BACKGROUND = Color.ORANGE; //background color constant
@@ -94,6 +93,10 @@ public class mainJFrame extends JFrame {
 		
 	}// End buildSouthPanel
 	
+	/**
+	 * Add components to the menuBar
+	 * @param frame the frame to add the menuBar to
+	 */
 	public final void menuBar(JFrame frame) {
 		//initialize menu bar and add menu items 
 		frame.setJMenuBar(menuBar);
