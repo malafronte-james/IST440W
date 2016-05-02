@@ -124,6 +124,7 @@ public class mainJFrame extends JFrame {
 		adminEditErrorItem = new JMenuItem("Edit Error"); 
 		adminDeleteErrorItem = new JMenuItem("Delete Error"); 
 		adminSendReportsItem = new JMenuItem("Send Reports"); 
+		adminSendReportsItem.setEnabled(false);
 		adminMenu.add(adminAddUserItem);
 		adminMenu.add(adminEditUserItem);
 		adminMenu.add(adminUserListItem);
@@ -139,6 +140,7 @@ public class mainJFrame extends JFrame {
 		devEditErrorItem = new JMenuItem("Edit Error"); 
 		devDeleteErrorItem = new JMenuItem("Delete Error"); 
 		devSendReportsItem = new JMenuItem("Send Reports"); 
+		devSendReportsItem.setEnabled(false);
 		devSQLItem = new JMenuItem("SQL Command");
 		developerMenu.add(devAddUserItem);
 		developerMenu.add(devEditUserItem);

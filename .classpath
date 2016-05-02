@@ -26,5 +26,6 @@
 	<classpathentry kind="lib" path="C:/Users/jmalafronte/Documents/Eclipse Workspace/Libraries/itext/itext-xtra-5.5.9-javadoc.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jmalafronte/Documents/Eclipse Workspace/Libraries/itext/xmlworker-5.5.9.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jmalafronte/Documents/Eclipse Workspace/Libraries/itext/xmlworker-5.5.9-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jmalafronte/Documents/Eclipse Workspace/Libraries/javax.mail-1.5.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

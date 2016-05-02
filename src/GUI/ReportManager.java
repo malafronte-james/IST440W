@@ -66,6 +66,7 @@ public class ReportManager extends smallJFrame
     	JDatePanelImpl fromDatePanel = new JDatePanelImpl(fromModel, p);
     	JDatePickerImpl fromDatePicker = new JDatePickerImpl(fromDatePanel, new DateComponentFormatter());
 		centerPanel.add(fromDatePicker);
+		fromDatePicker.setEnabled(false);
 		
 		centerPanel.add(new JLabel("Select Report:"), "gapleft 20" );
 		cmbReportSelector = new JComboBox(new String[] {"Overdue"});
@@ -76,6 +77,7 @@ public class ReportManager extends smallJFrame
     	JDatePanelImpl toPanel = new JDatePanelImpl(toModel, p);
     	JDatePickerImpl toDatePicker = new JDatePickerImpl(toPanel, new DateComponentFormatter());
 		centerPanel.add(toDatePicker);
+		toDatePicker.setEnabled(false);
 		
 		centerPanel.add(new JLabel("SAP User Name:"), "gapleft 20");
 		sapUserName = new JTextField(10);

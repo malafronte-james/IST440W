@@ -20,6 +20,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.print.PrintService;
 import javax.swing.*;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import Database.*;
 import Properties.*;
 import Utilities.*;
@@ -120,7 +127,7 @@ public class EventHandler implements ActionListener {
 		// editUserPanel
 		editUserPanel.editUserBackButton.addActionListener(this);
 		editUserPanel.editUserSaveButton.addActionListener(this);
-
+		
 		newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
 		sql.setDBPath(settings.getDatabasePath());
 
@@ -159,7 +166,7 @@ public class EventHandler implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		
 		/*
 		 * ================================= Edit Error
 		 * =====================================================================
@@ -202,6 +209,7 @@ public class EventHandler implements ActionListener {
 			} else {
 				JOptionPane.showMessageDialog(frame, "Missing Information!", "Please fill in all information!",
 						JOptionPane.INFORMATION_MESSAGE);
+				
 			}
 
 		}
@@ -250,7 +258,6 @@ public class EventHandler implements ActionListener {
 							editUserPanel.txtJobTitle.getText(),
 							editUserPanel.txtEmail.getText());
 
-					JOptionPane.showMessageDialog(frame, "Saved!", "Saved!", JOptionPane.INFORMATION_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(frame, "Passwords do not match",
 							"Passwords do not match! Please try again.", JOptionPane.INFORMATION_MESSAGE);
@@ -356,20 +363,7 @@ public class EventHandler implements ActionListener {
 					String template = settings.getPdfPath() + File.separator + "enf_template.pdf";
 					String completeENF = settings.getPdfOutPath() + File.separator + "ENF.pdf";
 
-					/*
-					 * Document doc = new Document(); PdfWriter.getInstance(doc,
-					 * new FileOutputStream("C:\\temp\\Report.pdf"));
-					 * doc.open(); doc.add(new
-					 * Paragraph("ENF",FontFactory.getFont(FontFactory.
-					 * TIMES_BOLD, 18))); doc.add(new Paragraph(new
-					 * Date().toString()));
-					 * 
-					 * PdfPTable table = new PdfPTable(1); table.addCell("1");
-					 * 
-					 * doc.add(table);
-					 * 
-					 * doc.close();
-					 */
+
 
 					PDFHandler enfPDF = new PDFHandler(0);
 					// fill in information
@@ -418,7 +412,45 @@ public class EventHandler implements ActionListener {
 		if (e.getSource() == frame.reportItem) {
 			// create createChangePWMenu
 			createReportManagerMenu();
-
+			
+			// reportManager
+			reportManagerMenu.runButton.addActionListener((new ActionListener() {
+		         public void actionPerformed(ActionEvent e) {
+			
+			/*
+			 * ================================= Report Manager
+			 * =====================================================================
+			 */
+				if (e.getSource() == reportManagerMenu.runButton)
+				{
+					
+					try{
+				      // connector object
+					  newSQLiteConnector sql = new newSQLiteConnector(settings.getDatabasePath());
+						  
+					  // date and format
+					  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+				      LocalDate ldt = LocalDate.now();
+						  
+					  Document doc = new Document(); 
+					  PdfWriter.getInstance(doc,new FileOutputStream("C:\\temp\\Report.pdf"));
+					  doc.open(); 
+					  doc.add(new Paragraph("OverDue ENFs: " + Integer.toString(sql.getOverdue(ldt.now().format(formatter).toString())),
+							  FontFactory.getFont(FontFactory.TIMES_BOLD, 18))); 
+					  
+					  /** not used */
+					  //PdfPTable table = new PdfPTable(1); table.addCell("1");
+					  //doc.add(table);
+					  
+					  doc.close();
+					} catch (Exception e3)
+					{
+						
+					}
+					 
+				}
+		         }
+			}));
 		} // end frame.reportItem
 
 		if (e.getSource() == frame.exitItem) {
@@ -464,13 +496,16 @@ public class EventHandler implements ActionListener {
 					
 					// fill in information
 					enfPDF.enfPdf(template.toString(), completeENF, data);
+					
 				}
 			
-				print.printPDF(settings.getPdfOutPath() + File.pathSeparator + "enf.pdf", ps);
+				print.printPDF(settings.getPdfOutPath() + "enf.pdf", ps);
+				
 				
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(frame, "Unable to print", "Unable to print!",
 						JOptionPane.ERROR_MESSAGE);
+				e1.printStackTrace();
 			}
 		
 

@@ -10,7 +10,9 @@ package Database;
  */
 
 import java.sql.*;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import GUI.*;
@@ -387,8 +389,8 @@ public class newSQLiteConnector {
 			pst.executeUpdate();
 
 			 JOptionPane.showMessageDialog(null,
-					 "Error Created",
 					 "Error Created Successfully.",
+					 "Error Created",
 					 JOptionPane.PLAIN_MESSAGE);
 			
 		} catch (SQLException e) {
@@ -477,7 +479,7 @@ public class newSQLiteConnector {
 					+ "Due_Date = '?'," // due_date
 					+ "Notes = ?," // notes
 					//+ "Attachment = '?'," // attachment
-					+ "Opened_By) = ?," // openedBy
+					+ "Opened_By = ? " // openedBy
 				    + "WHERE ENF_ID = ?;"; // ENF_ID
 			PreparedStatement pst = connection.prepareStatement(query);
 			//pst.setString(1, Associate_First_Name);
@@ -502,8 +504,8 @@ public class newSQLiteConnector {
 			int rs = pst.executeUpdate();
 			
 			 JOptionPane.showMessageDialog(null,
-					 "Error Updated",
 					 "Error Updated Successfully.",
+					 "Error Updated",
 					 JOptionPane.PLAIN_MESSAGE);
 			
 		} catch (SQLException e) {
@@ -511,6 +513,8 @@ public class newSQLiteConnector {
 					 "Currently Unavailable",
 					 "Connection Error",
 					 JOptionPane.ERROR_MESSAGE);
+			 
+			 e.printStackTrace();
 		}finally {
             try {
             	connection.close();
@@ -563,8 +567,8 @@ public class newSQLiteConnector {
 			pst.executeUpdate();
 			
 			 JOptionPane.showMessageDialog(null,
-					 "User Created",
 					 "User Created Successfully.",
+					 "User Created",
 					 JOptionPane.PLAIN_MESSAGE);
 			
 			
@@ -650,8 +654,8 @@ public class newSQLiteConnector {
 			int rs = pst.executeUpdate();
 
 			 JOptionPane.showMessageDialog(null,
-					 "User Updated",
 					 "User Updated Successfully.",
+					 "User Updated",
 					 JOptionPane.PLAIN_MESSAGE);
 			 
 		} catch (SQLException e) {
@@ -854,24 +858,38 @@ public class newSQLiteConnector {
 	/**
 	 * Retrieve all overdue errors
 	 * @param date
+	 * @return count the count of overdue
 	 */
-	public void getOverdue(String date)
+	public int getOverdue(String date)
 	{
 		try 
 		{
-			
+			int count = 0;
 			connect();
 			
-			String query = "SELECT * FROM Errors;";
+			String query = "SELECT * FROM Errors WHERE Status = ?;";
 			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, "Active");
 			ResultSet rs = pst.executeQuery();
 			
 			// cycle through results
 			while(rs.next())
 			{
-				//count = count + 1;
+				String error = rs.getString("Due_Date");
+				DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+				java.util.Date d = new java.util.Date();
+				d = dateFormat.parse(error);
 				
+				// get current date
+				java.util.Date currentDate = new java.util.Date();
+				   
+				if(currentDate.after(d))
+				{
+					count = count++;		
+				}			
 			}
+			
+			return count;
 			
 		      
 		} catch (Exception changePW) {
@@ -879,8 +897,7 @@ public class newSQLiteConnector {
 					 "Currently Unavailable",
 					 "Connection Error",
 					 JOptionPane.ERROR_MESSAGE);
-			 
-			 changePW.printStackTrace();
+			 return 0;
 		}finally {
             try {
             	connection.close();
